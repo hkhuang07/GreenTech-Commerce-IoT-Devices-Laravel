@@ -1,65 +1,169 @@
-# 🌿 GreenTech-Commerce: Intelligent Agri, Fueling Markets
+# 🛍️ GreenTech Commerce: IoT Device E-commerce Platform (Laravel)
 
-This is an integrated final project built on **PHP Laravel** (v11/10) that merges a specialized **IoT E-commerce platform** with a **Real-Time Data Visualization and Analytics Dashboard**.
+## 💡 Project Introduction
 
-The project fulfills requirements for both **PHP Web Technology** and **IoT Programming** by establishing a continuous data pipeline from sensor to web.
+The GreenTech Commerce project is a specialized E-commerce platform built with the Laravel Framework, focusing on the sale of Internet of Things (IoT) devices and components such as development boards (ESP Board, Arduino), sensors, and actuators. The standout feature is the integration of a Post-Sale IoT Device Management Module, which allows for modeling the monitoring of technical metrics and setting safety alert thresholds.
+
+The goal is to provide a professional distribution channel that meets the detailed technical information requirements of technical customers and developers.
+
+## ✨ Key Features
+
+| Icon | Feature | Detailed Description |
+|------|---------|---------------------|
+| 🛒 | **Comprehensive E-commerce Flow** | Supports the entire purchasing process: Product Browsing, Cart Management, Order Placement (OrdersController), and order tracking (OrderStatuses). |
+| 🛡️ | **Multi-level Security & Authorization** | 4 authorization levels: Admin, Saler (Sales), Shipper (Delivery), and Users (Customer), strictly controlled using RoleMiddleware in `app/Http/Middleware/` |
+| 📊 | **Exclusive IoT Devices Management** | A module enabling Admin to register deployed IoT devices (iot_devices), define measured metrics (device_metrics), and set safety alert thresholds (alert_thresholds). |
+| 📑 | **In-depth Data Management** | Separates core commercial information (products) from detailed technical specifications (product_details: CPU, RAM, Power Specs), crucial for technology products. |
+| 📧 | **Automated Email Notification** | Sends automatic order confirmation emails immediately after a customer completes a transaction (using PlaceOrderSuccessEmail.php). |
+| 🔄 | **Data Import/Export** | Supports bulk import and export of Product/Category/User data via Excel/CSV files using the Maatwebsite/Laravel-Excel library. |
+
+## 🛠️ Technology Stack
+
+The project is built on open-source technologies and modern development platforms:
+
+| Area | Technology | Version | Notes |
+|------|------------|---------|-------|
+| **Back-end Core** | Laravel Framework | 10.x | The main MVC platform, optimizing performance and security. |
+| **Language** | PHP | 8.2+ | Primary development language. |
+| **Database** | MySQL / MariaDB | 8.0+ | Stores relational data (Products, Orders, IoT Devices). |
+| **Front-end** | HTML5/CSS3, JS | Modern | Uses Blade Template Engine and the Cartzilla/Bootstrap library for the UI. |
+| **Support Library** | Maatwebsite/Excel | ~3.1 | Handles Import/Export files in the Admin Dashboard. |
+| **Rich Text Editor** | CKEditor 5 | N/A | Used for creating rich product descriptions. |
+
+## 🗃️ Database Structure (Key Entity Diagram)
+
+The database structure is designed around the core entities of Users, Products, Orders, and IoT Devices, establishing various relationships:
+
+| Table Name | Description | Key Relationships |
+|------------|-------------|-------------------|
+| **users** | Stores user information, including the roles column for authorization. | 1-N with orders |
+| **roles** | Defines system roles: Admin, Saler, Shipper, Users. | 1-N with users |
+| **products** | Core product information (name, price, stock quantity). | N-1 with categories, manufacturers |
+| **product_details** | Detailed technical specifications (CPU, RAM, Power Specs). | 1-1 with products |
+| **orders** | Overall order record (total amount, address, status). | N-1 with users, order_statuses |
+| **order_items** | Details of items in each order (stores price_at_order). | N-N between orders and products |
+| **iot_devices** | Deployed device information (device_id, location). | 1-N with device_metrics |
+| **alert_thresholds** | Safety alert thresholds (min_value, max_value) for each IoT metric. | N-1 with iot_devices |
+
+## 📁 Project Structure (Key Directories)
+
+The directory structure adheres to Laravel's MVC standard, supplemented by specific functional directories:
+
+```
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── ...Controller.php
+│   │   │   └── IoTDevicesController.php  <-- IoT device management logic
+│   │   └── Middleware/
+│   │       └── RoleMiddleware.php        <-- Authorization protection layer
+│   ├── Models/
+│   │   ├── Product.php
+│   │   ├── Order.php
+│   │   └── IoTDevice.php                 <-- Key Eloquent Models
+│   └── Mail/
+│       └── PlaceOrderSuccessEmail.php    <-- Automatic Email Template
+├── database/
+│   ├── migrations/                       <-- Database table schema definitions
+│   └── seeders/
+├── public/
+│   ├── assets/                           <-- Cartzilla/Bootstrap assets
+│   └── vendor/
+│       └── ckeditor5/                    <-- Rich Text Editor library
+├── resources/
+│   └── views/
+│       ├── administrator/                <-- Admin UI/CRUD
+│       ├── saler/                        <-- Sales Management UI
+│       ├── shipper/                      <-- Delivery Management UI
+│       ├── frontend/                     <-- Customer UI (Home, Products)
+│       └── user/                         <-- Personal UI (Profile, Checkout)
+├── routes/
+│   └── web.php                           <-- Main URL routing
+└── ...
+```
+
+## ⚙️ Setup & Installation Guide
+
+To run this project on your local machine, follow these steps:
+
+### 1. Requirements
+- PHP 8.2+
+- Composer
+- MySQL/MariaDB
+- Web Server environment (Apache/Nginx) or integrated environment (Laragon/XAMPP)
+
+### 2. Installation Steps
+
+**Clone Source Code:**
+```bash
+git clone [your_repository_link] greentech-commerce
+cd greentech-commerce
+```
+
+**Install Dependencies:**
+```bash
+composer install
+```
+
+**Configure Environment:**
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+Edit the .env file to configure your database connection:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=greentech-commerce # Your database name
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+**Run Migrations and Seed Data:**
+```bash
+php artisan migrate --seed
+```
+(This command creates tables (users, products, orders, iot_devices) and inserts sample data for roles and products)
+
+**Create Storage Symlink:**
+```bash
+php artisan storage:link
+```
+
+**Start the Project:**
+```bash
+php artisan serve
+```
+
+The project will be accessible at: **http://127.0.0.1:8000/greentech-commerce**
+
+## 🔑 Sample Login Credentials
+
+Use the following accounts to test the multi-level system:
+
+| Role | Username | Password | Access Area |
+|------|----------|----------|-------------|
+| **Administrator** | admin | password | Full system management (User, Order, IoT Config) |
+| **Saler (Sales)** | fengshuiying | password | Product, Category, Order Status updates |
+| **Shipper (Delivery)** | linsiruip | password | Orders in Shipping status management |
+| **Customer (User)** | yuzhangyou | password | Homepage, Ordering, Personal Profile |
+
+## 🚀 Getting Started
+
+After installation, you can:
+
+1. **Browse Products**: Visit the homepage to view available IoT devices and components
+2. **Add to Cart**: Select products and manage your shopping cart
+3. **Place Orders**: Complete the checkout process with automated email notifications
+4. **IoT Management**: (Admin only) Configure and monitor deployed IoT devices
+5. **Import/Export**: (Admin only) Bulk manage product data via Excel/CSV
+
+## 📞 Support
+
+For technical support or questions about the IoT integration features, please refer to the project documentation or contact the development team.
 
 ---
 
-## 💻 I. Laravel Platform Core (E-commerce & Admin)
-
-The core application manages all transactional and static data.
-
-### 1. Database Architecture (MySQL)
-
-We utilize a **normalized MySQL database** to ensure transaction integrity and a structured data layer for the E-commerce components.
-
-| Component Group | Key Tables | Purpose |
-| :--- | :--- | :--- |
-| **User Management** | `users`, `roles` | Manages customer and administrator access, leveraging a dedicated `roles` table for easy scaling and permission handling. |
-| **E-commerce Core** | `products`, `categories`, `manufacturers` | Handles product inventory, metadata (`slug`, `price`, `stock_quantity`), and product segmentation. |
-| **Transactions** | `orders`, `order_items`, `order_statuses` | Stores historical sales data, tracking price at the time of order (`price_at_order`) and shipping details. |
-| **Product Metadata** | `product_details`, `product_images` | Separated tables (1:1 and 1:Many) for technical specifications (`cpu`, `memory`) and image gallery management. |
-
-### 2. Laravel Features & Routes (CRUD)
-
-The administration panel (`app.blade.php` navigation) provides full **CRUD** functionality across all essential models, ensuring easy inventory and user management.
-
-| Module | Primary Model | Purpose (Routes) |
-| :--- | :--- | :--- |
-| **E-commerce** | `Product`, `Order`, `Category` | Management of sales, stock, item details, and status updates. |
-| **Core Admin** | `User`, `Role` | Management of user roles, permissions, and account activation (`is_active`). |
-| **IoT Management** | `IoTDevice`, `DeviceMetric`, `AlertThresholds` | Manages the configuration, mapping, and alert rules required for the analytical dashboard. |
-
----
-
-## 📊 II. Advanced Integration: IoT Data Visualization
-
-The application's advanced feature is the ability to display and analyze sensor data from live Smart Garden deployments.
-
-### 1. Dual-Database Connectivity
-
-The system seamlessly combines MySQL data with NoSQL data:
-
-* **IoT Control Tables (MySQL):** `iot_devices`, `device_metrics`, and `alert_thresholds` store the **metadata** required for fetching data (e.g., the `device_id` and the `metric_key` like 't' for temperature).
-* **Time-Series Data (MongoDB Atlas):** Raw, high-volume sensor readings (`sensor_readings` collection) are persisted here via the Node.js Broker.
-* **Technology:** PHP uses the dedicated **MongoDB PHP Driver** (required installation) to establish a direct connection to Atlas for real-time aggregation and plotting.
-
-### 2. Data Visualization Logic
-
-The dedicated **`DataVisualizationController`** performs the following operations:
-
-1.  Retrieves the required **`device_id`** and **`metric_key`** (e.g., 'm' for moisture) from the MySQL configuration tables.
-2.  Executes optimized **MongoDB queries** (time-based `$gte`) to retrieve historical sensor values.
-3.  Formats the MongoDB output into **JSON** arrays (labels, datasets).
-4.  Presents the data using a JavaScript charting library (e.g., **Chart.js** or **Plotly.js**) on the admin dashboard.
-
----
-
-## ⚙️ III. Deployment and Backend Stack
-
-| Component | Technology | Role in Integration |
-| :--- | :--- | :--- |
-| **Backend/Broker** | **Node.js (Aedes MQTT)** | Receives data from Wokwi/ESP32 devices and persists it to MongoDB. |
-| **Network Link** | **Cloudflare Tunnel / Ngrok** | Provides the public TCP/MQTT endpoint (`mqtt-broker.hkhuang07.me`) necessary to bridge the cloud-based Wokwi simulator to the local Node.js Broker. |
-| **Frontend/UI** | **Bootstrap 5 & Font Awesome** | Provides a responsive, clean interface for both E-commerce and the integrated data dashboard. |
+**GreenTech Commerce** - Professional IoT Device Distribution Platform
