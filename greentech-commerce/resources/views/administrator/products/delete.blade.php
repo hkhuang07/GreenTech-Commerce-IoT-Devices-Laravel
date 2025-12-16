@@ -72,7 +72,7 @@
 </div>
 
 <script>
-    // 💥 ĐỔI TÊN HÀM CHÍNH
+    // 💥 ĐỔI TÊN HÀM CHÍNH openDeleteModalFunction
     function openDeleteModalFunction(productId, productData) { // Tên mới
         document.getElementById('deleteProductName').textContent = productData.name;
         document.getElementById('deleteProductPrice').textContent = parseFloat(productData.price).toFixed(2);

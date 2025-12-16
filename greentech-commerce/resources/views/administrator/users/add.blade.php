@@ -166,7 +166,12 @@
                                 <label class="form-label" for="avatar">
                                     <i class="fa-light fa-user-circle"></i> Avatar URL
                                 </label>
-                                <input type="text" class="form-control item-input @error('avatar') is-invalid @enderror" id="avatar" name="avatar" value="{{ old('avatar') }}" placeholder="https://..." />
+                                <input
+                                    type="file"
+                                    class="form-control item-input @error('avatar') is-invalid @enderror"
+                                    id="avatar"
+                                    name="avatar"
+                                    placeholder="Choose avatar URL" />
                                 @error('avatar')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
@@ -175,8 +180,13 @@
                                 <label class="form-label" for="background">
                                     <i class="fa-light fa-image"></i> Background URL
                                 </label>
-                                <input type="text" class="form-control item-input @error('background') is-invalid @enderror" id="background" name="background" value="{{ old('background') }}" placeholder="https://..." />
-                                @error('background')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                <input
+                                    type="file"
+                                    class="form-control item-input @error('background') is-invalid @enderror"
+                                    id="background"
+                                    name="background"
+                                    placeholder="Choose avatar URL" />
+                                 @error('background')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
                     </div>
@@ -200,30 +210,30 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const addUserModal = document.getElementById('addUserModal');
-    const addUserForm = document.getElementById('addUserForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const btnText = submitBtn.querySelector('.btn-text');
-    const btnLoading = submitBtn.querySelector('.btn-loading');
+    document.addEventListener('DOMContentLoaded', function() {
+        const addUserModal = document.getElementById('addUserModal');
+        const addUserForm = document.getElementById('addUserForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = submitBtn.querySelector('.btn-text');
+        const btnLoading = submitBtn.querySelector('.btn-loading');
 
-    addUserModal.addEventListener('hidden.bs.modal', function() {
-        addUserForm.reset();
-        const invalidInputs = addUserForm.querySelectorAll('.is-invalid');
-        invalidInputs.forEach(input => input.classList.remove('is-invalid'));
-        submitBtn.disabled = false;
-        btnText.style.display = 'inline';
-        btnLoading.style.display = 'none';
-    });
+        addUserModal.addEventListener('hidden.bs.modal', function() {
+            addUserForm.reset();
+            const invalidInputs = addUserForm.querySelectorAll('.is-invalid');
+            invalidInputs.forEach(input => input.classList.remove('is-invalid'));
+            submitBtn.disabled = false;
+            btnText.style.display = 'inline';
+            btnLoading.style.display = 'none';
+        });
 
-    addUserForm.addEventListener('submit', function(e) {
-        submitBtn.disabled = true;
-        btnText.style.display = 'none';
-        btnLoading.style.display = 'inline';
-    });
+        addUserForm.addEventListener('submit', function(e) {
+            submitBtn.disabled = true;
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline';
+        });
 
-    addUserModal.addEventListener('shown.bs.modal', function() {
-        document.getElementById('name').focus();
+        addUserModal.addEventListener('shown.bs.modal', function() {
+            document.getElementById('name').focus();
+        });
     });
-});
 </script>

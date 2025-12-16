@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 
 class UsersController extends Controller
@@ -43,6 +45,20 @@ class UsersController extends Controller
             'company' => ['nullable', 'string', 'max:255'],
         ]);
 
+        $pathavt = null;
+        if ($request->hasFile('avatar')) {
+            $extension = $request->file('avatar')->extension();
+            $filename = Str::slug($request->name, '-') . '.' . $extension;
+            $path = Storage::putFileAs('users', $request->file('avatar'), $filename);
+        }
+        
+        $pathbg = null;
+        if ($request->hasFile('background')) {
+            $extension = $request->file('background')->extension();
+            $filename = Str::slug($request->name, '-') . '.' . $extension;
+            $path = Storage::putFileAs('users', $request->file('background'), $filename);
+        }
+
         User::create([
             'name' => $request->name,
             'username' => $request->username,
@@ -53,8 +69,8 @@ class UsersController extends Controller
             'id_card' => $request->id_card,
             'phone' => $request->phone,
             'address' => $request->address,
-            'avatar' => $request->avatar,
-            'background' => $request->background,
+            'avatar' => $pathavt ?? null,
+            'background' => $pathbg ?? null,
             'jobs' => $request->jobs,
             'school' => $request->school,
             'company' => $request->company,
@@ -90,6 +106,20 @@ class UsersController extends Controller
             'company' => ['nullable', 'string', 'max:255'],
         ]);
 
+        $pathavt = null;
+        if ($request->hasFile('avatar')) {
+            $extension = $request->file('avatar')->extension();
+            $filename = Str::slug($request->name, '-') . '.' . $extension;
+            $path = Storage::putFileAs('users', $request->file('avatar'), $filename);
+        }
+        
+        $pathbg = null;
+        if ($request->hasFile('background')) {
+            $extension = $request->file('background')->extension();
+            $filename = Str::slug($request->name, '-') . '.' . $extension;
+            $path = Storage::putFileAs('users', $request->file('background'), $filename);
+        }
+
         $user->name = $request->name;
         $user->username = $request->username;
         $user->is_active = $request->boolean('is_active', $user->is_active);
@@ -98,8 +128,8 @@ class UsersController extends Controller
         $user->id_card = $request->id_card;
         $user->phone = $request->phone;
         $user->address = $request->address;
-        $user->avatar = $request->avatar;
-        $user->background = $request->background;
+        $user->avatar = $pathavt ?? null;
+        $user->background = $pathbg ?? null;
         $user->jobs = $request->jobs;
         $user->school = $request->school;
         $user->company = $request->company;

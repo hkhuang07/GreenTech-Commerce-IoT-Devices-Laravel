@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 
+
 use Illuminate\Http\Request;
 
 class CustomersController extends Controller
@@ -26,6 +27,7 @@ class CustomersController extends Controller
     {
         $this->middleware('auth');
     }
+    
     public function getHome()
     {
         if (Auth::check()) {
@@ -91,21 +93,18 @@ class CustomersController extends Controller
 
         DB::beginTransaction();
         try {
-            $subtotal = Cart::priceTotal(2, '.', '');   
+            $subtotal = Cart::priceTotal(2, '.', '');
             $taxAmount = Cart::tax(2, '.', '');
             $shippingFee = 0.00;
             $totalAmount = Cart::total(2, '.', '');
 
-            // 3. Create Order
             $order = new Order();
             $order->user_id = Auth::user()->id;
             $order->order_status_id = $initialStatusId;
 
-            // Shipping Info
             $order->shipping_address = $request->shipping_address;
             $order->contact_phone = $request->contact_phone;
 
-            // Financial & Required Fields
             $order->payment_method = $request->payment_method;
             $order->subtotal = $subtotal;
             $order->tax_amount = $taxAmount;
@@ -113,9 +112,8 @@ class CustomersController extends Controller
             $order->total_amount = $totalAmount;
             $order->notes = $request->notes ?? null;
 
-            $order->save(); 
+            $order->save();
 
-            // 4. Create Order Items
             foreach (Cart::content() as $value) {
                 $productExists = Product::where('id', $value->id)->exists();
                 if (!$productExists) {
@@ -129,29 +127,20 @@ class CustomersController extends Controller
                 $detail->price_at_order = $value->price;
                 $detail->save();
             }
-
-            // 5. Send confirmation email (Đặt trong khối try-catch riêng để không rollback transaction chính)
             try {
                 Mail::to(Auth::user()->email)->send(new PlaceOrderSuccessEmail($order));
             } catch (\Exception $emailException) {
                 Log::warning('Failed to send order confirmation email for order ID ' . $order->id . ': ' . $emailException->getMessage());
             }
-
-            // Commit Transaction nếu mọi thứ thành côngp
             DB::commit();
-
-
-            // 7. Chuyển hướng thành công
-            return redirect()->route('user.place-order-success')->with('success', 'Đơn hàng của bạn đã được đặt thành công.');
-            //return redirect()->route('user.placeordersusccess')->with('success', 'Đơn hàng của bạn đã được đặt thành công.');
+            return redirect()->route('user.place-order-success')->with('success', 'Your order has been successfully placed.');
         } catch (\Exception $e) {
             DB::rollBack();
 
             Log::error('Order placement failed: ' . $e->getMessage(), ['user_id' => Auth::id(), 'cart_data' => Cart::content()->toArray()]);
 
-            // Trả về lỗi, đảm bảo lỗi được hiển thị.
             return redirect()->back()
-                ->with('error', 'Đặt hàng thất bại. Lỗi: ' . $e->getMessage())
+                ->with('error', 'Order failed. Error: ' . $e->getMessage())
                 ->withInput();
         }
     }
@@ -175,7 +164,14 @@ class CustomersController extends Controller
 
     public function getProfile()
     {
-        return redirect()->route('user.home');
+        if (!Auth::check()) {
+            return redirect()->route('user.login');
+        }
+        $user = Auth::user()->loadCount('orders');
+        
+        $orderCount = $user->orders_count;
+
+        return view('user.profile', compact('user'));
     }
 
     public function postProfile(Request $request)

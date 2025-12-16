@@ -18,6 +18,7 @@ class OrdersController extends Controller
             ->withCount('items')
             ->orderBy('created_at', 'desc')
             ->get();
+
         $statuses = OrderStatus::all();
         $users = User::all();
         $products = Product::all();
@@ -52,7 +53,7 @@ class OrdersController extends Controller
             foreach ($request->items as $item) {
                 $subtotal += $item['quantity'] * $item['price_at_order'];
             }
-            
+
             $taxAmount = $request->tax_amount ?? 0;
             $shippingFee = $request->shipping_fee ?? 0;
             $totalAmount = $subtotal + $taxAmount + $shippingFee;
@@ -113,12 +114,12 @@ class OrdersController extends Controller
         DB::beginTransaction();
         try {
             $order = Order::findOrFail($id);
-            
+
             $subtotal = 0;
             foreach ($request->items as $item) {
                 $subtotal += $item['quantity'] * $item['price_at_order'];
             }
-            
+
             $taxAmount = $request->tax_amount ?? $order->tax_amount;
             $shippingFee = $request->shipping_fee ?? $order->shipping_fee;
             $totalAmount = $subtotal + $taxAmount + $shippingFee;
@@ -161,7 +162,7 @@ class OrdersController extends Controller
             OrderItem::where('order_id', $id)->delete();
             $order = Order::findOrFail($id);
             $order->delete();
-            
+
             DB::commit();
             return redirect()->route('administrator.orders')->with('success', 'Order deleted successfully.');
         } catch (\Exception $e) {

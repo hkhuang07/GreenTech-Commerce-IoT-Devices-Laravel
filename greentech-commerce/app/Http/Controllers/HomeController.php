@@ -54,9 +54,8 @@ class HomeController extends Controller
 
     public function getHome()
     {
-        $manufactures = Manufacturer::orderBy('name')->get();
+        //$manufactures = Manufacturer::orderBy('name')->get();
 
-        // Eager Load Category Products (giữ nguyên)
         $categories = Category::with([
             'products' => function ($query) {
                 $query->latest()
@@ -65,44 +64,87 @@ class HomeController extends Controller
             }
         ])->get();
 
-        $featuredProducts = Product::with(['images', 'category'])
-            ->inRandomOrder() // Hoặc dùng latest() / where('is_featured', true)
-            ->limit(4)
+        $manufactures = Manufacturer::with([
+            'products' => function ($query) {
+                $query->latest()
+                    ->with('avatar')
+                    ->take(8);
+            }
+        ])->get();
+
+        $manufacturesProducts = Product::with(['images', 'manufacturer'])
+            ->inRandomOrder()
+            ->limit(10)
             ->get();
 
-        // Chuyển đối tượng ProductImages thành mảng chỉ chứa các URL ảnh
+        $featuredProducts = Product::with(['images', 'category'])
+            ->inRandomOrder() 
+            ->limit(10)
+            ->get();
+
         $sliderImages = [];
         foreach ($featuredProducts as $product) {
-            // Lấy tất cả ảnh, bao gồm cả avatar
             $allImages = $product->images->pluck('url')->all();
             $sliderImages[$product->slug] = [
                 'name' => $product->name,
                 'slug' => $product->slug,
                 'category_slug' => $product->category->slug,
                 'price' => $product->price,
-                'images' => array_slice($allImages, 0, 4) // Lấy tối đa 4 ảnh
+                'images' => array_slice($allImages, 0, 10) 
+            ];
+        }
+        foreach ($manufacturesProducts as $product) {
+            $allImages = $product->images->pluck('url')->all();
+            $sliderImages[$product->slug] = [
+                'name' => $product->name,
+                'slug' => $product->slug,
+                'manufacturer_slug' => $product->manufacturer->slug,
+                'price' => $product->price,
+                'images' => array_slice($allImages, 0, 10) 
             ];
         }
 
 
-        return view('frontend.home', compact('manufactures', 'categories', 'featuredProducts', 'sliderImages'));
+        return view('frontend.home', compact('manufactures', 'categories', 'featuredProducts', 'manufacturesProducts', 'sliderImages'));
     }
 
-    /*public function getHome()
+    public function searchProducts(Request $request)
     {
-        $manufactures = Manufacturer::orderBy('name')->get();
+        $keyword = $request->query('q');
+        $query = Product::query();
 
-        $categories = Category::with([
-            'products' => function ($query) {
-                $query->latest()
-                    ->with('avatar')
-                    ->take(8);
-            }
-        ])->get();
-        return view('frontend.home', compact('manufactures', 'categories'));
-    }*/
+        if ($keyword) {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('name', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('description', 'LIKE', '%' . $keyword . '%');
+            });
 
-    public function getProducts($categoryname_slug = '')
+            $query->orWhereHas('category', function ($q) use ($keyword) {
+                $q->where('name', 'LIKE', '%' . $keyword . '%');
+            });
+
+            $query->orWhereHas('manufacturer', function ($q) use ($keyword) {
+                $q->where('name', 'LIKE', '%' . $keyword . '%');
+            });
+        } else {
+            $products = collect();
+        }
+        $products = $query
+            ->with(['category', 'manufacturer', 'images', 'details'])
+            ->paginate(12)
+            ->appends(['q' => $keyword]);
+
+        $categories = Category::all();
+
+        return view('frontend.products', [
+            'products' => $products,
+            'categories' => $categories,
+            'search_keyword' => $keyword,
+            'title' => 'Kết quả tìm kiếm cho: "' . $keyword . '"'
+        ]);
+    }
+
+    public function getProducts_Categories($categoryname_slug = '')
     {
         $query = Product::with(['category', 'manufacturer', 'avatar']);
         $category = null;
@@ -126,31 +168,75 @@ class HomeController extends Controller
         return view('frontend.products', compact('products', 'category', 'categories', 'title'));
     }
 
-    public function getProduct_Details($categoryname_slug = '', $productname_slug = '')
+    public function getProducts_Manufacturers($manufacturer_slug = '') 
     {
-        // Tìm sản phẩm dựa trên slug và eager load tất cả các mối quan hệ cần thiết
+        $query = Product::with(['category', 'manufacturer', 'avatar']);
+        $manufacturer = null;
+        if ($manufacturer_slug) {
+            $manufacturer = Manufacturer::where('slug', $manufacturer_slug)->first();
+
+            if ($manufacturer) {
+                $query->where('manufacturer_id', $manufacturer->id);
+                $title = $manufacturer->name . ' Products';
+            } else {
+                $title = 'Products Not Found';
+            }
+        } else {
+            $title = 'All Products';
+        }
+
+        $products = $query->orderBy('name', 'asc')->get();
+
+        $manufacturers = Manufacturer::all();
+
+        return view('frontend.products', compact('products', 'manufacturer', 'manufacturers', 'title'));
+    }
+
+    public function getProduct_Category($categoryname_slug = '', $productname_slug = '')
+    {
         $product = Product::where('slug', $productname_slug)
             ->with(['category', 'manufacturer', 'details', 'images'])
-            ->firstOrFail(); // Sử dụng firstOrFail để trả về 404 nếu không tìm thấy
+            ->firstOrFail(); 
 
-        // Lấy danh mục để sử dụng trong breadcrumb
         $category = $product->category;
 
-        // Đảm bảo có avatar
         $avatar = $product->images->where('is_avatar', true)->first();
 
-        // Lấy 4 sản phẩm liên quan (cùng danh mục, loại trừ sản phẩm hiện tại)
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->with('avatar')
             ->inRandomOrder()
-            ->take(4)
+            ->take(10)
             ->get();
 
         $title = $product->name;
 
         return view('frontend.product_details', compact('product', 'category', 'avatar', 'relatedProducts', 'title'));
     }
+
+    public function getProduct_Manufacturer($manufacturer_slug = '', $productname_slug = '')
+    {
+        $product = Product::where('slug', $productname_slug)
+            ->with(['category', 'manufacturer', 'details', 'images'])
+            ->firstOrFail(); 
+
+        $manufacturer = $product->manufacturer;
+
+        $avatar = $product->images->where('is_avatar', true)->first();
+
+        $relatedProducts = Product::where('category_id', $product->category_id)
+            ->where('id', '!=', $product->id)
+            ->with('avatar')
+            ->inRandomOrder()
+            ->take(10)
+            ->get();
+
+        $title = $product->name;    
+
+        return view('frontend.product_details', compact('product', 'manufacturer', 'avatar', 'relatedProducts', 'title'));
+    }
+
+
     public function getArticles($topicname_slug = '')
     {
         // Bổ sung code tại đây

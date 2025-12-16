@@ -5,7 +5,7 @@ namespace App\View\Composers;
 use App\Models\Category;
 use Illuminate\View\View;
 
-class LoaiSanPhamComposer
+class CategoriesComposer
 {
     public function __construct(
         protected Category $categories,

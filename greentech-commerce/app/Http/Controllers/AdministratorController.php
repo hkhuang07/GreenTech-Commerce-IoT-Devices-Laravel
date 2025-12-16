@@ -11,8 +11,7 @@ class AdministratorController extends Controller
         $this->middleware('auth');
     }
     
-    // Method index - là method chính cho trang dashboard
-    public function index()
+   public function index()
     {
         return view('administrator.dashboard');
     }

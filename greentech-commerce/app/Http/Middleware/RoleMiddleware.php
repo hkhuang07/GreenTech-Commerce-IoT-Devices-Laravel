@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Middleware;
 
 use Closure;
@@ -9,19 +8,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
- 
     public function handle(Request $request, Closure $next, string $role): Response
     {
         if (!Auth::check()) {
-            return redirect('/user/login'); // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+            return redirect(route('user.login'));         
         }
 
         $user = Auth::user();
-     
+        
         if ($user->role && strtolower($user->role->name) == strtolower($role)) {
             return $next($request);
         }
-        
         return abort(403, 'Unauthorized action. You do not have the required role.');
     }
 }

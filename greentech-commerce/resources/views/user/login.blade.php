@@ -10,51 +10,17 @@
     <link rel="stylesheet" href="{{ asset('public/assets/vendor/font-awesome/css/all.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('public/assets/icons/cartzilla-icons.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('public/assets/css/theme.min.css') }}" id="theme-styles" />
-    
+
     <link rel="stylesheet" href="{{ asset('public/css/form.css') }}" />
-    <link rel="stylesheet" href="{{ asset('public/css/layout.css') }}" /> 
-    
-    <style>
-        /* Tối ưu hóa cho layout đăng nhập chia đôi màn hình */
-        .auth-container-greentech {
-            background-color: var(--bg-light); /* Sử dụng biến từ layout.css */
-        }
-        .auth-form-section {
-            /* Giữ nguyên chiều rộng của form */
-            max-width: 416px; 
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .auth-cover-greentech {
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--green-lime) 100%); 
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .auth-welcome-content h1 {
-            color: white;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        }
-        .auth-logo-greentech img {
-            width: 36px;
-            height: 36px;
-        }
-        .auth-btn-login {
-             background: var(--primary-dark);
-             border: 1px solid var(--green-spring);
-             color: white;
-             transition: all 0.3s;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('public/css/layout.css') }}" />
 </head>
 
 <body>
     <main class="content-wrapper w-100 auth-container-greentech">
         <div class="d-lg-flex">
-            
+
             <div class="d-flex flex-column min-vh-100 w-100 py-4 px-3 px-lg-0 auth-form-section">
-                
+
                 <header class="navbar px-0 pb-4 mt-n2 mt-sm-0 mb-2 mb-md-3 mb-lg-4">
                     <a href="{{ route('frontend.home') }}" class="navbar-brand pt-0 d-flex align-items-center">
                         <span class="d-flex flex-shrink-0 text-primary me-2 auth-logo-greentech">
@@ -65,70 +31,70 @@
                 </header>
 
                 <h1 class="h2 mt-auto">Sign In to GreenTech</h1>
-                
+
                 <div class="nav fs-sm mb-4">
                     Don't have an account yet?
                     <a class="nav-link text-decoration-underline p-0 ms-2" href="{{ route('user.register') }}">Create an account</a>
                 </div>
 
                 @if(session('warning'))
-                    <div class="alert d-flex alert-danger" role="alert">
-                        <i class="ci-banned fs-lg pe-1 mt-1 me-2"></i>
-                        <div>{{ session('warning') }}</div>
-                    </div>
+                <div class="alert d-flex alert-danger" role="alert">
+                    <i class="ci-banned fs-lg pe-1 mt-1 me-2"></i>
+                    <div>{{ session('warning') }}</div>
+                </div>
                 @endif
                 @if (session('status'))
-                    <div class="alert d-flex alert-success" role="alert">
-                        <i class="ci-check-circle fs-lg pe-1 mt-1 me-2"></i>
-                        <div>{{ session('status') }}</div>
-                    </div>
+                <div class="alert d-flex alert-success" role="alert">
+                    <i class="ci-check-circle fs-lg pe-1 mt-1 me-2"></i>
+                    <div>{{ session('status') }}</div>
+                </div>
                 @endif
                 @if (session('success'))
-                    <div class="alert d-flex alert-success" role="alert">
-                        <i class="ci-check-circle fs-lg pe-1 mt-1 me-2"></i>
-                        <div>{{ session('success') }}</div>
-                    </div>
+                <div class="alert d-flex alert-success" role="alert">
+                    <i class="ci-check-circle fs-lg pe-1 mt-1 me-2"></i>
+                    <div>{{ session('success') }}</div>
+                </div>
                 @endif
-                
+
                 <form method="post" action="{{ route('user.login.post') }}" class="needs-validation" novalidate id="loginForm">
                     @csrf
-                    
+
                     <div class="position-relative mb-4">
-                        <input type="text" 
-                               class="form-control form-control-lg auth-input {{ ($errors->has('email') || $errors->has('username') || $errors->has('login')) ? 'is-invalid' : '' }}" 
-                               id="email" 
-                               name="email" 
-                               value="{{ old('email') }}" 
-                               placeholder="Email, Username, or Phone Number" 
-                               required />
+                        <input type="text"
+                            class="form-control form-control-lg auth-input {{ ($errors->has('email') || $errors->has('username') || $errors->has('login')) ? 'is-invalid' : '' }}"
+                            id="email"
+                            name="email"
+                            value="{{ old('email') }}"
+                            placeholder="Email, Username, or Phone Number"
+                            required />
                         @error('email')
-                            <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
                         @enderror
-                         @error('username')
-                            <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        @error('username')
+                        <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
                         @enderror
                         @error('login')
-                            <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
                         @enderror
                     </div>
-                    
+
                     <div class="mb-4">
                         <div class="password-toggle">
-                            <input type="password" 
-                                   class="form-control form-control-lg auth-input {{ $errors->has('password') ? 'is-invalid' : '' }}" 
-                                   id="password" 
-                                   name="password" 
-                                   placeholder="Password" 
-                                   required />
+                            <input type="password"
+                                class="form-control form-control-lg auth-input {{ $errors->has('password') ? 'is-invalid' : '' }}"
+                                id="password"
+                                name="password"
+                                placeholder="Password"
+                                required />
                             @error('password')
-                                <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                            <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
                             @enderror
                             <label class="password-toggle-button fs-lg">
                                 <input type="checkbox" class="btn-check" />
                             </label>
                         </div>
                     </div>
-                    
+
                     <div class="d-flex align-items-center justify-content-between mb-4">
                         <div class="form-check me-2">
                             <input class="form-check-input" type="checkbox" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }} />
@@ -142,12 +108,12 @@
                         </div>
                         @endif
                     </div>
-                    
+
                     <button type="submit" class="auth-btn-login btn btn-lg btn-primary w-100" id="loginButton">
-                         <span class="btn-text">Log In</span>
-                         <span class="btn-loading" style="display: none;">
+                        <span class="btn-text">Log In</span>
+                        <span class="btn-loading" style="display: none;">
                             <i class="fas fa-spinner fa-spin"></i>
-                         </span>
+                        </span>
                     </button>
                 </form>
 
@@ -172,49 +138,50 @@
                 <!--footer class="mt-auto">
                    
                 </footer-->
-                 <p class="fs-xs mb-0">
-                        Copyright &copy; by <span class="animate-underline"><a class="animate-target text-dark-emphasis text-decoration-none" href="#" target="_blank">{{ config('app.name', 'GreenTech') }}</a></span>.
-                    </p>
+                <p class="fs-xs mb-0">
+                    Copyright &copy; by <span class="animate-underline"><a class="animate-target text-dark-emphasis text-decoration-none" href="#" target="_blank">{{ config('app.name', 'GreenTech') }}</a></span>.
+                </p>
             </div>
 
             <div class="d-none d-lg-block w-100 py-4 ms-auto auth-cover-greentech" style="max-width:1034px">
                 <div class="d-flex flex-column justify-content-center h-100 rounded-5 overflow-hidden">
                     <div class="text-center p-5 auth-welcome-content">
                         <h1 class="display-3 fw-bold mb-3">GreenTech IoT</h1>
-                        <p class="lead fw-medium">Smart solutions for a greener, more efficient harvest.</p>
-                        </div>
+                        <p class="lead fw-medium">Smart Agriculture, Fueling Markets.</p>
+
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('loginForm');
-        const button = document.getElementById('loginButton');
-        const loginInput = form.querySelector('input[name="email"]'); // Dùng 'email' vì bạn dùng chung cho username/email
-        const passwordInput = form.querySelector('input[name="password"]');
-        
-        // 1. Kích hoạt/Vô hiệu hóa nút
-        function checkFormValidity() {
-            const isValid = loginInput.value.trim() !== '' && passwordInput.value.trim() !== '';
-            button.disabled = !isValid;
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
+            const button = document.getElementById('loginButton');
+            const loginInput = form.querySelector('input[name="email"]'); // Dùng 'email' vì bạn dùng chung cho username/email
+            const passwordInput = form.querySelector('input[name="password"]');
 
-        loginInput.addEventListener('input', checkFormValidity);
-        passwordInput.addEventListener('input', checkFormValidity);
-        checkFormValidity();
-
-        // 2. Form submission handling (Hiển thị Spinner)
-        form.addEventListener('submit', function(e) {
-            if (!button.disabled) {
-                // Chỉ kích hoạt loading nếu form hợp lệ
-                button.disabled = true;
-                button.querySelector('.btn-text').style.display = 'none';
-                button.querySelector('.btn-loading').style.display = 'inline-block';
+            // 1. Kích hoạt/Vô hiệu hóa nút
+            function checkFormValidity() {
+                const isValid = loginInput.value.trim() !== '' && passwordInput.value.trim() !== '';
+                button.disabled = !isValid;
             }
+
+            loginInput.addEventListener('input', checkFormValidity);
+            passwordInput.addEventListener('input', checkFormValidity);
+            checkFormValidity();
+
+            // 2. Form submission handling (Hiển thị Spinner)
+            form.addEventListener('submit', function(e) {
+                if (!button.disabled) {
+                    // Chỉ kích hoạt loading nếu form hợp lệ
+                    button.disabled = true;
+                    button.querySelector('.btn-text').style.display = 'none';
+                    button.querySelector('.btn-loading').style.display = 'inline-block';
+                }
+            });
         });
-    });
     </script>
     <script src="{{ asset('public/assets/js/theme.min.js') }}"></script>
 </body>

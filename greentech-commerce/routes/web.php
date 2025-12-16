@@ -29,8 +29,7 @@ Route::get('/login/google/callback', [HomeController::class, 'getGoogleCallback'
 Route::get('/user/login', [HomeController::class, 'getLogin'])->name('user.login');
 Route::post('/user/login', [LoginController::class, 'login'])->name('user.login.post');
 Route::post('/user/logout', [LoginController::class, 'logout'])->name('user.logout');
-Route::get('/user/register', [RegisterController::class, 'getRegister'])->name('user.register');
-Route::get('/user/register', [RegisterController::class, 'showRegistrationForm'])->name('user.register');
+Route::get('/user/register', [HomeController::class, 'getRegister'])->name('user.register');
 Route::post('/user/register', [RegisterController::class, 'register'])->name('user.register.post');
 
 // Password reset routes 
@@ -44,13 +43,15 @@ Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name(
 Route::name('frontend.')->group(function () {
     // Trang chủ
     Route::get('/', [HomeController::class, 'getHome'])->name('home');
-    Route::get('/home', [HomeController::class, 'getHome'])->name('home');
+    Route::get('/home', [HomeController::class, 'getHome'])->name('home'); 
     
     // Trang sản phẩm
     Route::get('/products', [HomeController::class, 'getProducts'])->name('products');
-    Route::get('/products/{categoryname_slug}', [HomeController::class, 'getProducts'])->name('products.categories');
-    Route::get('/products/{categoryname_slug}/{productname_slug}', [HomeController::class, 'getProduct_Details'])->name('products.details');
-    
+    Route::get('/products/{categoryname_slug}', [HomeController::class, 'getProducts_Categories'])->name('products.categories');
+    Route::get('/products/{manufacturer_slug}', [HomeController::class, 'getProducts_Manufacturers'])->name('products.manufacturers');
+    Route::get('/products/{categoryname_slug}/{productname_slug}', [HomeController::class, 'getProduct_Category'])->name('products.details');
+    Route::get('/products/{manufacturer_slug}/{productname_slug}', [HomeController::class, 'getProduct_Manufacturer'])->name('products.product_manufacturer_details');
+
     // Tin tức
     Route::get('/articles', [HomeController::class, 'getArticles'])->name('articles');
     Route::get('/articles/{topicname_slug}', [HomeController::class, 'getArticles'])->name('articles.topics');
@@ -74,8 +75,7 @@ Route::name('frontend.')->group(function () {
     Route::get('/contact', [HomeController::class, 'getContact'])->name('contact');
 });
 
-Route::prefix('user')->name('user.')->group(function () {
-    // Trang chủ của giao diện khách hàng
+Route::prefix('user')->name('user.')->middleware('auth')->group(function () {    
     Route::get('/', [CustomersController::class, 'getHome'])->name('home');
     Route::get('/home', [CustomersController::class, 'getHome'])->name('home');
     

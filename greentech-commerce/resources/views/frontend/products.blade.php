@@ -5,14 +5,7 @@
 @section('content')
 <div class="container py-4">
     
-    {{-- Tiêu đề trang (hiển thị danh mục đang lọc) --}}
-    <h1 class="h2 mb-4">
-        @if($category)
-            Products in Category: {{ $category->name }}
-        @else
-            All Products
-        @endif
-    </h1>
+    
 
     <div class="row">
         

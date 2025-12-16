@@ -301,23 +301,5 @@
         addModal.addEventListener('shown.bs.modal', function() {
             document.getElementById('name').focus();
         });
-
-        function openUpdateModalWrapper(event, productId, productData) {
-            if (event) event.stopPropagation(); // Ngăn sự kiện click lan truyền lên item-card
-            openUpdateModalFunction(productId, productData);
-        }
-
-        // Wrapper cho Delete Modal (Gọi hàm openDeleteModalFunction)
-        function openDeleteModalWrapper(event, productId, productData) {
-            if (event) event.stopPropagation(); // Ngăn sự kiện click lan truyền lên item-card
-            openDeleteModalFunction(productId, productData);
-        }
-
-        // Wrapper cho Details Modal (Gọi hàm openProductDetailsModalFunction)
-        function openDetailsModalWrapper(event, productData) {
-            // Không cần stopPropagation() vì hàm này được gọi khi click vào item-card (hành động mong muốn)
-            // Nếu click từ item-content, event sẽ truyền lên item-card.
-            openProductDetailsModalFunction(productData);
-        }
     });
 </script>

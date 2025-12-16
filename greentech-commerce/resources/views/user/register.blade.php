@@ -1,160 +1,244 @@
-    <!DOCTYPE html>
-    <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-bs-theme="light" data-pwa="true">
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-bs-theme="light" data-pwa="true">
 
-    <head>
-        <meta charset="utf-8" />
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover" />
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <title>Register an account | {{ config('app.name', 'GreenTech') }}</title>
 
-        <!-- Viewport -->
-        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover" />
+    {{-- Tải các tài nguyên cơ bản của Cartzilla --}}
+    <script src="{{ asset('public/assets/js/theme-switcher.js') }}"></script>
+    <link rel="preload" href="{{ asset('public/assets/fonts/inter-variable-latin.woff2') }}" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="{{ asset('public/assets/icons/cartzilla-icons.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('public/assets/vendor/font-awesome/css/all.min.css') }}" /> {{-- Font Awesome cho spinner --}}
+    <link rel="stylesheet" href="{{ asset('public/assets/css/theme.min.css') }}" id="theme-styles" />
 
-        <!-- CSRF Token -->
-        <meta name="csrf-token" content="{{ csrf_token() }}" />
-        <!-- Title -->
-        <title>Register an account| {{ config('app.name', 'Laravel') }}</title>
-        <!-- Favicon / App icons -->
-        <link rel="icon" type="image/jpg" href="{{ asset('public/image/greentech-logo.jpg') }}" sizes="32x32" />
-        <link rel="apple-touch-icon" href="{{ asset('public/image/greentech-logo.jpg') }}" />
-        <!-- Theme switcher (color modes) -->
-        <script src="{{ asset('public/assets/js/theme-switcher.js') }}"></script>
-        <!-- Preloaded local web font (Inter) -->
-        <link rel="preload" href="{{ asset('public/assets/fonts/inter-variable-latin.woff2') }}" as="font" type="font/woff2" crossorigin />
-        <!-- Font icons -->
-        <link rel="preload" href="{{ asset('public/assets/icons/cartzilla-icons.woff2') }}" as="font" type="font/woff2" crossorigin />
-        <link rel="stylesheet" href="{{ asset('public/assets/icons/cartzilla-icons.min.css') }}" />
-        <!-- Bootstrap + Theme styles -->
-        <link rel="preload" href="{{ asset('public/assets/css/theme.min.css') }}" as="style" />
-        <link rel="stylesheet" href="{{ asset('public/assets/css/theme.min.css') }}" id="theme-styles" />F
-    </head>
+    {{-- Tải các file CSS tùy chỉnh --}}
+    <link rel="stylesheet" href="{{ asset('public/css/form.css') }}" />
+    <link rel="stylesheet" href="{{ asset('public/css/layout.css') }}" />
+    <link rel="stylesheet" href="{{ asset('public/css/list.css') }}" /> 
 
-    <!-- Body -->
+</head>
 
-    <body>
-        <!-- Page content -->
-        <main class="content-wrapper w-100 px-3 ps-lg-5 pe-lg-4 mx-auto" style="max-width:1920px">
-            <div class="d-lg-flex">
-                <!-- Login form + Footer -->
-                <div class="d-flex flex-column min-vh-100 w-100 py-4 mx-auto me-lg-5" style="max-width:416px">
-                    <!-- Logo -->
-                    <header class="navbar px-0 pb-4 mt-n2 mt-sm-0 mb-2 mb-md-3 mb-lg-4">
-                        <a href="{{ route('frontend.home') }}" class="navbar-brand pt-0">
-                            <span class="d-flex flex-shrink-0 text-primary me-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36">
-                                    <path d="M36 18.01c0 8.097-5.355 14.949-12.705 17.2a18.12 18.12 0 0 1-5.315.79C9.622 36 2.608 30.313.573 22.611.257 21.407.059 20.162 0 18.879v-1.758c.02-.395.059-.79.099-1.185.099-.908.277-1.817.514-2.686C2.687 5.628 9.682 0 18 0c5.572 0 10.551 2.528 13.871 6.517 1.502 1.797 2.648 3.91 3.359 6.201.494 1.659.771 3.436.771 5.292z" fill="currentColor" />
-                                    <g fill="#fff">
-                                        <path d="M17.466 21.624c-.514 0-.988-.316-1.146-.829-.198-.632.138-1.303.771-1.501l7.666-2.469-1.205-8.254-13.317 4.621a1.19 1.19 0 0 1-1.521-.75 1.19 1.19 0 0 1 .751-1.521l13.89-4.818c.553-.197 1.166-.138 1.64.158a1.82 1.82 0 0 1 .85 1.284l1.344 9.183c.138.987-.494 1.994-1.482 2.33l-7.864 2.528-.375.04zm7.31.138c-.178-.632-.85-1.007-1.482-.81l-5.177 1.58c-2.331.79-3.28.02-3.418-.099l-6.56-8.412a4.25 4.25 0 0 0-4.406-1.758l-3.122.987c-.237.889-.415 1.777-.514 2.686l4.228-1.363a1.84 1.84 0 0 1 1.857.81l6.659 8.551c.751.948 2.015 1.323 3.359 1.323.909 0 1.857-.178 2.687-.474l5.078-1.54c.632-.178 1.008-.829.81-1.481z" />
-                                        <use href="#czlogo" />
-                                        <use href="#czlogo" x="8.516" y="-2.172" />
-                                    </g>
-                                    <defs>
-                                        <path id="czlogo" d="M18.689 28.654a1.94 1.94 0 0 1-1.936 1.935 1.94 1.94 0 0 1-1.936-1.935 1.94 1.94 0 0 1 1.936-1.935 1.94 1.94 0 0 1 1.936 1.935z" />
-                                    </defs>
-                                </svg>
-                            </span>
-                            {{ config('app.name', 'GreenTech') }}
-                        </a>
-                    </header>
+<body class="auth-container-greentech">
+    <main class="content-wrapper w-100">
+        <div class="d-lg-flex">
 
-                    <h1 class="h2 mt-auto">Register an account</h1>
-                    <div class="nav fs-sm mb-3 mb-lg-4">
-                        I already have an account.
-                        <a class="nav-link text-decoration-underline p-0 ms-2" href="{{ route('user.login') }}">Login</a>
-                    </div>
+            {{-- Cột Trái: Form Đăng ký (auth-form-section) --}}
+            <div class="d-flex flex-column min-vh-100 w-100 py-4 px-3 px-lg-0 mx-auto me-lg-5 auth-form-section" style="max-width:416px">
 
-                    <!-- Form -->
-                    <form method="post" action="{{ route('user.register') }}" class="needs-validation" novalidate>
-                        @csrf
-                        <div class="position-relative mb-4">
-                            <label for="register-email" class="form-label">Full name</label>
-                            <input type="text" class="form-control form-control-lg @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required />
-                            <div class="invalid-tooltip bg-transparent py-0">The full name must not be left blank !</div>
-                        </div>
-                        <div class="position-relative mb-4">
-                            <label for="register-email" class="form-label">Email </label>
-                            <input type="email" class="form-control form-control-lg @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" autocomplete="off" required />
-                            <div class="invalid-tooltip bg-transparent py-0">Please enter a valid email address!</div>
-                        </div>
-                        <div class="mb-4">
-                            <label for="register-password" class="form-label">Password</label>
-                            <div class="password-toggle">
-                                <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror" id="password" name="password" autocomplete="new-password" minlength="8" placeholder="Tối thiểu 8 ký tự" required />
-                                <div class="invalid-tooltip bg-transparent py-0">The password does not meet the required criteria!</div>
-                                <label class="password-toggle-button fs-lg">
-                                    <input type="checkbox" class="btn-check" />
-                                </label>
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <label for="password-confirm" class="form-label"></label>
-                            <div class="password-toggle">
-                                <input type="password" class="form-control form-control-lg @error('password_confirmation') is-invalid @enderror" id="password-confirm" name="password_confirmation" autocomplete="new-password" minlength="8" placeholder="Tối thiểu 8 ký tự" required />
-                                <div class="invalid-tooltip bg-transparent py-0">Password confirmation does not meet the required criteria.</div>
-                                <label class="password-toggle-button fs-lg">
-                                    <input type="checkbox" class="btn-check" />
-                                </label>
-                            </div>
-                        </div>
-                        <div class="d-flex flex-column gap-2 mb-4">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="remember" name="remember" />
-                                <label for="save-pass" class="form-check-label">Save password</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="privacy" name="privacy" required />
-                                <label for="privacy" class="form-check-label">I have read and accept <a class="text-dark-emphasis" href="#">Privacy policy/a></label>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-lg btn-primary w-100">
-                            Create an account
-                            <i class="ci-chevron-right fs-lg ms-1 me-n1"></i>
-                        </button>
-                    </form>
+                {{-- Logo --}}
+                <header class="navbar px-0 pb-4 mt-n2 mt-sm-0 mb-2 mb-md-3 mb-lg-4">
+                    <a href="{{ route('frontend.home') }}" class="navbar-brand pt-0 d-flex align-items-center">
+                        <span class="d-flex flex-shrink-0 text-primary me-2 auth-logo-greentech">
+                            <img src="{{ asset('public/images/greentech-logo.jpg') }}" alt="{{ config('app.name', 'GreenTech') }} Logo" />
+                        </span>
+                        <span class="fw-bold fs-5">{{ config('app.name', 'GreenTech') }}</span>
+                    </a>
+                </header>
 
-                    <!-- Divider -->
-                    <div class="d-flex align-items-center my-4">
-                        <hr class="w-100 m-0">
-                        <span class="text-body-emphasis fw-medium text-nowrap mx-4">hoặc đăng nhập với</span>
-                        <hr class="w-100 m-0">
-                    </div>
+                <h1 class="h2 mt-auto">Create a New GreenTech Account</h1>
 
-                    <!-- Social login -->
-                    <div class="d-flex flex-column flex-sm-row gap-3 pb-4 mb-3 mb-lg-4">
-                        <a href="{{ route('google.login') }}" class="btn btn-lg btn-outline-secondary w-100 px-2">
-                            <i class="ci-google ms-1 me-1"></i> Google
-                        </a>
-                        <a href="#" class="btn btn-lg btn-outline-secondary w-100 px-2">
-                            <i class="ci-facebook ms-1 me-1"></i> Facebook
-                        </a>
-                        <a href="#" class="btn btn-lg btn-outline-secondary w-100 px-2">
-                            <i class="ci-apple ms-1 me-1"></i> Apple
-                        </a>
-                    </div>
-
-                    <!-- Footer -->
-                    <footer class="mt-auto">
-                        <p class="fs-xs mb-0">
-                            Copyright &copy; by <span class="animate-underline"><a class="animate-target text-dark-emphasis text-decoration-none" href="#" target="_blank">Cartzilla</a></span>.
-                        </p>
-                    </footer>
+                {{-- Link chuyển sang Login --}}
+                <div class="nav fs-sm mb-4">
+                    I already have an account.
+                    <a class="nav-link text-decoration-underline p-0 ms-2" href="{{ route('user.login') }}">Sign In</a>
                 </div>
 
-                <!-- Cover image visible on screens > 992px wide (lg breakpoint) -->
-                <div class="d-none d-lg-block w-100 py-4 ms-auto" style="max-width:1034px">
-                    <div class="d-flex flex-column justify-content-end h-100 rounded-5 overflow-hidden">
-                        <span class="position-absolute top-0 start-0 w-100 h-100 d-none-dark" style="background:linear-gradient(-90deg, #accbee 0%, #e7f0fd 100%)"></span>
-                        <span class="position-absolute top-0 start-0 w-100 h-100 d-none d-block-dark" style="background:linear-gradient(-90deg, #1b273a 0%, #1f2632 100%)"></span>
-                        <div class="ratio position-relative z-2" style="--cz-aspect-ratio:calc(1030 / 1032 * 100%)">
-                            <img src="{{ asset('public/assets/img/cover/cover.png') }}" alt="Girl" />
+                {{-- Hiển thị lỗi chung (dùng cấu trúc alert của Bootstrap) --}}
+                @if ($errors->any())
+                <div class="alert d-flex alert-danger" role="alert">
+                    <i class="ci-banned fs-lg pe-1 mt-1 me-2"></i>
+                    <div>{{ __('Registration failed. Please check the form fields.') }}</div>
+                </div>
+                @endif
+
+                {{-- Form Đăng ký --}}
+                <form method="post" action="{{ route('user.register.post') }}" class="needs-validation" novalidate id="registerForm">
+                    @csrf
+
+                    {{-- Full Name (Required) --}}
+                    <div class="position-relative mb-4">
+                        <!--label for="name" class="form-label">Full Name</label-->
+                        <input type="text"
+                            class="form-control form-control-lg @error('name') is-invalid @enderror"
+                            id="name"
+                            name="name"
+                            value="{{ old('name') }}"
+                            placeholder="Full Name"
+                            required />
+                        @error('name')
+                        <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        @enderror
+                    </div>
+
+                    {{-- Email (Required) --}}
+                    <div class="position-relative mb-4">
+                        <!--label for="email" class="form-label">Email Address</label-->
+                        <input type="email" class="form-control form-control-lg @error('email') is-invalid @enderror"
+                            id="email"
+                            name="email"
+                            value="{{ old('email') }}"
+                            placeholder="Email Address"
+                            autocomplete="off"
+                            required />
+                        @error('email')
+                        <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        @enderror
+                    </div>
+
+                    {{-- Username (Optional) --}}
+                    <div class="position-relative mb-4">
+                        <!--label for="username" class="form-label">Username (Optional)</label-->
+                        <input type="text" class="form-control form-control-lg @error('username') is-invalid @enderror"
+                            id="username"
+                            name="username"
+                            value="{{ old('username') }}" 
+                            placeholder="Username (Option)" />
+                        @error('username')
+                        <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        @enderror
+                    </div>
+
+                    {{-- Phone Number (Optional) --}}
+                    <div class="position-relative mb-4">
+                        <!--label for="phone" class="form-label">Phone Number (Optional)</label-->
+                        <input type="text" class="form-control form-control-lg @error('phone') is-invalid @enderror" 
+                        id="phone" 
+                        name="phone" 
+                        value="{{ old('phone') }}" 
+                        placeholder="Phone Number"
+                        />
+                        @error('phone')
+                        <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        @enderror
+                    </div>
+
+                    {{-- ID Card / CCCD (Optional) --}}
+                    <div class="position-relative mb-4">
+                        <!--label for="id_card" class="form-label">ID Card / CCCD (Optional)</label-->
+                        <input type="text" class="form-control form-control-lg @error('id_card') is-invalid @enderror" 
+                        id="id_card" 
+                        name="id_card" 
+                        value="{{ old('id_card') }}" 
+                        placeholder="ID Card"/>
+                        @error('id_card')
+                        <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        @enderror
+                    </div>
+
+                    {{-- Password (Required) --}}
+                    <div class="mb-4">
+                        <!--label for="password" class="form-label">Password</label-->
+                        <div class="password-toggle">
+                            <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror" 
+                            id="password" 
+                            name="password" 
+                            autocomplete="new-password" 
+                            minlength="8" 
+                            placeholder="Password (Minimum 8 characters)" 
+                            required />
+                            @error('password')
+                            <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                            @enderror
+                            <label class="password-toggle-button fs-lg">
+                                <input type="checkbox" class="btn-check" />
+                            </label>
                         </div>
+                    </div>
+
+                    {{-- Confirm Password (Required) --}}
+                    <div class="mb-4">
+                        <!--label for="password-confirm" class="form-label">Confirm Password</label-->
+                        <div class="password-toggle">
+                            <input type="password" class="form-control form-control-lg @error('password_confirmation') is-invalid @enderror" 
+                            id="password-confirm" 
+                            name="password_confirmation" 
+                            autocomplete="new-password" 
+                            minlength="8" 
+                            placeholder="Confirm Password (Minimum 8 characters)" 
+                            required />
+                            @error('password_confirmation')
+                            <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                            @enderror
+                            <label class="password-toggle-button fs-lg">
+                                <input type="checkbox" class="btn-check" />
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column gap-2 mb-4">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="privacy" name="privacy" />
+                            <label for="privacy" class="form-check-label">I have read and accept <a class="text-dark-emphasis" href="#">Privacy policy</a></label>
+                        </div>
+                    </div>
+
+                    {{-- Submit Button (Dùng lớp auth-btn-login tùy chỉnh) --}}
+                    <button type="submit" class="auth-btn-login btn btn-lg btn-primary w-100" id="registerButton">
+                        <span class="btn-text">Create an account</span>
+                        <span class="btn-loading" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                    </button>
+                </form>
+
+                {{-- Social login --}}
+                <div class="d-flex align-items-center my-4">
+                    <hr class="w-100 m-0">
+                    <span class="text-body-emphasis fw-medium text-nowrap mx-4">or register with</span>
+                    <hr class="w-100 m-0">
+                </div>
+                <div class="d-flex flex-column flex-sm-row gap-3 pb-4 mb-3 mb-lg-4">
+                    <a href="{{ route('google.login') }}" class="btn btn-lg btn-outline-secondary w-100 px-2">
+                        <i class="ci-google ms-1 me-1"></i> Google
+                    </a>
+                    <a href="#" class="btn btn-lg btn-outline-secondary w-100 px-2">
+                        <i class="ci-facebook ms-1 me-1"></i> Facebook
+                    </a>
+                    <a href="#" class="btn btn-lg btn-outline-secondary w-100 px-2">
+                        <i class="ci-apple ms-1 me-1"></i> Apple
+                    </a>
+                </div>
+
+                {{-- Footer --}}
+                <p class="fs-xs mb-0">
+                    Copyright &copy; by <span class="animate-underline"><a class="animate-target text-dark-emphasis text-decoration-none" href="#" target="_blank">{{ config('app.name', 'GreenTech') }}</a></span>.
+                </p>
+
+            </div>
+
+            <div class="d d-lg-block w-100 py-4 ms-auto auth-cover-greentech" style="max-width:1034px">
+                <div class="d-flex flex-column justify-content-center h-100 rounded-5 overflow-hidden">
+
+                    <div class="text-center p-5 auth-welcome-content">
+                        <h1 class="display-3 fw-bold mb-3">GreenTech IoT</h1>
+                        <p class="lead fw-medium">Smart Agriculture, Fueling Markets.</p>
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
+    </main>
 
-        main>
-        <!-- Customizer toggle -->
-        <div class="floating-buttons position-fixed top-50 end-0 z-sticky me-3 me-xl-4 pb-4"></div>
-        <!-- Bootstrap + Theme scripts -->
-        <script src="{{ asset('public/assets/js/theme.min.js') }}"></script>
-    </body>
+    {{-- Script cho Loading Spinner (Tương tự login) --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registerForm');
+            const button = document.getElementById('registerButton');
 
-    </html>
+            // Xử lý khi nhấn Submit
+            form.addEventListener('submit', function(e) {
+                // Sử dụng HTML5 checkValidity để kiểm tra các trường required
+                if (form.checkValidity()) {
+                    button.disabled = true;
+                    button.querySelector('.btn-text').style.display = 'none';
+                    button.querySelector('.btn-loading').style.display = 'inline-block';
+                }
+            });
+        });
+    </script>
+    <script src="{{ asset('public/assets/js/theme.min.js') }}"></script>
+</body>
+
+</html>

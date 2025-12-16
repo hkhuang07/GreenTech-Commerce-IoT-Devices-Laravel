@@ -15,7 +15,6 @@
     <script src="{{ asset('public/assets/js/theme-switcher.js') }}"></script>
 
     <link rel="preload" href="{{ asset('public/assets/fonts/inter-variable-latin.woff2') }}" as="font" type="font/woff2" crossorigin />
-
     <link rel="preload" href="{{ asset('public/assets/icons/cartzilla-icons.woff2') }}" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="{{ asset('public/assets/icons/cartzilla-icons.min.css') }}" />
 
@@ -31,14 +30,20 @@
 <body>
     <div class="offcanvas offcanvas-top" id="searchBox" data-bs-backdrop="static" tabindex="-1">
         <div class="offcanvas-header border-bottom p-0 py-lg-1">
-            <form class="container d-flex align-items-center" action="{{ route('frontend.products') }}" method="GET">
-                <input type="search" name="search" class="form-control form-control-lg fs-lg border-0 rounded-0 py-3 ps-0" placeholder="What are you looking for?" data-autofocus="offcanvas" />
+            <form class="container d-flex align-items-center" action="{{ route('frontend.search.products') }}" method="GET">
+                <input
+                    type="search"
+                    name="q" 
+                    class="form-control form-control-lg fs-lg border-0 rounded-0 py-3 ps-0"
+                    placeholder="What are you looking for?"
+                    data-autofocus="offcanvas"
+                    value="{{ request('q') }}" {{-- Giữ lại từ khóa tìm kiếm nếu có --}} />
                 <button type="reset" class="btn-close fs-lg" data-bs-dismiss="offcanvas"></button>
             </form>
         </div>
         <div class="offcanvas-body px-0">
             <div class="container text-center">
-                <i class="fas fa-search fa-3x text-body-tertiary opacity-60 mb-4"></i>
+                <i class="ci-search fa-3x text-body-tertiary opacity-60 mb-4"></i> {{-- Thay fas fa-search bằng ci-search --}}
                 <h6 class="mb-2">Search results will appear here</h6>
                 <p class="fs-sm mb-0">Start typing in the search box to see immediate results.</p>
             </div>
@@ -134,10 +139,9 @@
 
                         <li class="nav-item dropdown py-lg-2 me-lg-n1 me-xl-0">
                             <a class="nav-link dropdown-toggle d-flex align-items-center" href="{{ route('frontend.products') }}" role="button" data-bs-toggle="dropdown" data-bs-trigger="hover" data-bs-auto-close="outside">
-                                <i class="ci-gift me-2"></i>Products
+                                <i class="ci-gift me-2"></i>Category
                             </a>
                             <ul class="dropdown-menu" style="--cz-dropdown-spacer:.875rem">
-                                {{-- Kiểm tra nếu biến globalCategories tồn tại (từ View Composer) --}}
                                 @if(isset($globalCategories))
                                 @foreach($globalCategories as $category)
                                 <li>
@@ -147,8 +151,27 @@
                                 </li>
                                 @endforeach
                                 @else
-                                {{-- Fallback nếu View Composer chưa được cấu hình hoặc dữ liệu trống --}}
                                 <li><a class="dropdown-item" href="#">No Categories</a></li>
+                                @endif
+                            </ul>
+                        </li>
+
+                        <li class="nav-item dropdown py-lg-2 me-lg-n1 me-xl-0">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="{{ route('frontend.products') }}" role="button" data-bs-toggle="dropdown" data-bs-trigger="hover" data-bs-auto-close="outside">
+                                <i class="ci-gift me-2"></i>Manufacturer
+                            </a>
+                            <ul class="dropdown-menu" style="--cz-dropdown-spacer:.875rem">
+                                @if(isset($globalManufactures))
+                                @foreach($globalManufactures as $manufacturer)
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('frontend.products.manufacturers', ['manufacturer_slug' => $manufacturer->slug]) }}">
+                                        {{ $manufacturer->name }}
+                                    </a>
+                                </li>
+                                dd($globalManufactures)
+                                @endforeach
+                                @else
+                                <li><a class="dropdown-item" href="#">No Manufacturer</a></li>
                                 @endif
                             </ul>
                         </li>
@@ -171,7 +194,7 @@
                     </ul>
                 </div>
                 <div class="offcanvas-header nav border-top px-0 py-3 mt-3 d-md-none">
-                    <a class="nav-link justify-content-center w-100 d-flex align-items-center" href="{{ route('user.home') }}">
+                    <a class="nav-link justify-content-center w-100 d-flex align-items-center" href="{{ route('user.login') }}">
                         <i class="ci-user fs-lg opacity-60 ms-n2 me-2"></i>
                         My Account
                     </a>
@@ -213,6 +236,8 @@
                 <button type="button" class="btn btn-icon btn-lg fs-xl btn-outline-secondary border-0 rounded-circle animate-shake" data-bs-toggle="offcanvas" data-bs-target="#searchBox">
                     <i class="ci-search animate-target"></i>
                 </button>
+
+
 
                 <a class="btn btn-icon btn-lg fs-lg btn-outline-secondary border-0 rounded-circle animate-shake d-none d-md-inline-flex" href="{{ route('user.home') }}">
                     <i class="ci-user animate-target"></i>

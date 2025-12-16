@@ -155,7 +155,7 @@
                                 <label class="form-label" for="update_avatar">
                                     <i class="fa-light fa-user-circle"></i> Avatar URL
                                 </label>
-                                <input type="text" class="form-control item-input" id="update_avatar" name="avatar" placeholder="https://..." />
+                                <input type="file" class="form-control item-input" id="update_avatar" name="avatar" placeholder="https://..." />
                                 <div id="currentAvatarPreview" class="mt-2" style="display: none;">
                                     <img id="currentAvatar" src="" alt="Avatar" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
                                 </div>
@@ -166,7 +166,7 @@
                                 <label class="form-label" for="update_background">
                                     <i class="fa-light fa-image"></i> Background URL
                                 </label>
-                                <input type="text" class="form-control item-input" id="update_background" name="background" placeholder="https://..." />
+                                <input type="file" class="form-control item-input" id="update_background" name="background" placeholder="https://..." />
                             </div>
                         </div>
                     </div>

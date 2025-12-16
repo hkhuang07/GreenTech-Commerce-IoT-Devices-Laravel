@@ -20,13 +20,10 @@
                                 <div class="swiper-wrapper">
                                     @foreach($featuredProducts as $product)
                                     <div class="swiper-slide text-center text-xl-start pt-5 py-xl-5">
-                                        {{-- Lấy tên danh mục/thông tin phụ --}}
                                         <p class="text-body">{{ $product->category->name ?? 'IoT Product' }} Deal!</p>
 
-                                        {{-- Tên sản phẩm --}}
                                         <h2 class="display-4 pb-2 pb-xl-4">{{ $product->name }}</h2>
 
-                                        {{-- Nút mua hàng/xem chi tiết --}}
                                         <a class="btn btn-lg btn-primary" href="{{ route('frontend.products.details', ['categoryname_slug' => $product->category->slug, 'productname_slug' => $product->slug]) }}">
                                             Shop Now ${{ number_format($product->price, 0) }}
                                             <i class="ci-arrow-up-right fs-lg ms-2 me-n1"></i>
@@ -38,16 +35,13 @@
                             </div>
                         </div>
 
-                        {{-- CỘT 2: IMAGE SLIDER (CONTROLLED SLIDER) --}}
                         <div class="col-9 col-sm-7 col-md-6 col-lg-5 col-xl-7">
                             <div class="swiper user-select-none" id="sliderImages" data-swiper='{"allowTouchMove": false, "loop": true, "effect": "fade", "fadeEffect": {"crossFade": true}}'>
                                 <div class="swiper-wrapper">
 
-                                    {{-- 💥 LẶP QUA CÁC SẢN PHẨM NỔI BẬT CHO PHẦN ẢNH --}}
                                     @foreach($featuredProducts as $product)
                                     <div class="swiper-slide d-flex justify-content-end">
                                         <div class="ratio rtl-flip" style="max-width:495px; --cz-aspect-ratio:calc(537 / 495 * 100%)">
-                                            {{-- Hiển thị ảnh Avatar hoặc ảnh đầu tiên --}}
                                             <img src="{{ asset('storage/app/private/'. optional($product->avatar)->url) }}" alt="{{ $product->name }}" />
                                         </div>
                                     </div>
@@ -82,7 +76,7 @@
                         <img src="{{ asset('storage/app/private/'.$value->logo) }}" class="d-none d-block-dark" alt="No Logo" />
                     </a>
                 </div>
-                @endforeach
+                @endforeach    
             </div>
         </div>
     </section-->
@@ -92,7 +86,7 @@
             <div class="d-flex flex-nowrap align-items-center" style="min-width: max-content;">
                 @foreach($manufactures as $value )
                 <div style="width: 160px; flex-shrink: 0;">
-                    <a class="d-flex justify-content-center py-3 px-2 px-xl-3" href="#">
+                    <a class="d-flex justify-content-center py-3 px-2 px-xl-3" href="{{ route('frontend.products.product_manufacturer_details', ['manufacturer_slug' => $product->manufacturer->slug, 'productname_slug' => $product->slug]) }}">
                         <img src="{{ asset('storage/app/private/'.$value->logo)}}" class="d-block d-none-dark" alt="{{ $value->name }}" style="max-height: 40px;" />
                         <img src="{{ asset('storage/app/private/'.$value->logo) }}" class="d-none d-block-dark" alt="{{ $value->name }}" style="max-height: 40px;" />
                     </a>
@@ -110,6 +104,7 @@
         @foreach($categories as $cate)
         <section class="container pt-2 mt-2 mb-3">
             <!-- Heading -->
+            @if($cate->products->count() > 0)
             <div class="d-flex align-items-center justify-content-between border-bottom pb-3 pb-md-4">
                 <h2 class="h3 mb-0">{{ $cate->name }}</h2>
                 <div class="nav ms-3">
@@ -118,6 +113,8 @@
                     </a>
                 </div>
             </div>
+            @endif
+
             <!-- Product grid -->
             <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 pt-4">
                 <!-- Item -->
@@ -172,7 +169,7 @@
                                 </a>
                             </h3>
                             <div class="d-flex align-items-center justify-content-between">
-                                <div class="h5 lh-1 mb-0">{{ number_format($prod->price, 0, ',', '.') }}<small>đ</small></div>
+                                <div class="h5 lh-1 mb-0">{{ number_format($prod->price, 0, ',', '.') }}<small>$</small></div>
                                 <a href="{{ route('frontend.shoppingcard.add', ['productname_slug' => $prod->slug]) }}" class="product-card-button btn btn-icon btn-secondary animate-slide-end ms-2">
                                     <i class="ci-shopping-cart fs-base animate-target"></i>
                                 </a>

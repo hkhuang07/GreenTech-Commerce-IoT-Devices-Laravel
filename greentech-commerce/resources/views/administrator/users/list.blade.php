@@ -42,13 +42,17 @@
             @forelse($users as $user)
             <div class="item-card" data-user-id="{{ $user->id }}">
                 <div class="item-image-container">
-                    @if($user->avatar)
-                    <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="item-image" loading="lazy">
+                    @if($user->avatar) && $user->avatar && file_exists(storage_path('app/private/' . $user->avatar)))
+                    <img src="{{ asset('storage/app/private/'. $user->avatar) }}"
+                        alt="{{ $avatar->name }}"
+                        class="item-image"
+                        loading="lazy">
                     @else
                     <div class="item-image-placeholder">
                         <i class="fas fa-user"></i>
                     </div>
                     @endif
+
 
                     <div class="status-badge {{ $user->is_active ? 'status-active' : 'status-inactive' }}">
                         <i class="fas fa-circle"></i>
