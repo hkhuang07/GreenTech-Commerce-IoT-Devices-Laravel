@@ -17,6 +17,25 @@ The goal is to provide a professional distribution channel that meets the detail
   <em>Frontend Home Page</em>
 </p>
 
+<p align="center">
+   <img src="demo/login.jpg" alt="login" width="900"/>
+  <br/>
+  <em>Login Page</em>
+</p>
+
+<p align="center">
+   <img src="demo/register.jpg" alt="register" width="900"/>
+  <br/>
+  <em>Register Page</em>
+</p>
+
+
+<p align="center">
+   <img src="demo/admin.jpg" alt="admin" width="900"/>
+  <br/>
+  <em>Administrator Dashboard</em>
+</p>
+
 ---
 
 ## ✨ Key Features
