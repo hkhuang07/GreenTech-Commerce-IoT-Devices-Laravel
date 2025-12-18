@@ -55,7 +55,6 @@ class HomeController extends Controller
     public function getHome()
     {
         //$manufactures = Manufacturer::orderBy('name')->get();
-
         $categories = Category::with([
             'products' => function ($query) {
                 $query->latest()

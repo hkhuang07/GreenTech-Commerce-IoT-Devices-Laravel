@@ -16,36 +16,71 @@
                 <form action="{{ route('user.place-order') }}" method="post" class="needs-validation" novalidate id="checkout-form">
                     @csrf
                     
-                    <div class="d-flex align-items-start">
-                        <div class="d-flex align-items-center justify-content-center bg-primary text-white rounded-circle fs-sm fw-semibold lh-1 flex-shrink-0" style="width:2rem; height:2rem; margin-top:-.125rem">1</div>
+                    {{-- Section 1: Shipping Information --}}
+                    <div class="d-flex align-items-start mb-4">
+                        <div class="d-flex align-items-center justify-content-center bg-primary text-white rounded-circle fs-sm fw-semibold lh-1 flex-shrink-0" style="width:2rem; height:2rem;">1</div>
                         <div class="w-100 ps-3 ps-md-4">
-                            <h1 class="h5 mb-md-4">Shipping Information</h1>
-                            
+                            <h1 class="h5 mb-4">Shipping Information</h1>
                             <div class="mb-3">
-                                <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control form-control-lg" id="name" name="name" value="{{ Auth::user()->name ?? '' }}" readonly />
+                                <label for="name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control form-control-lg" id="name" value="{{ Auth::user()->name ?? '' }}" readonly />
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-sm-6">
+                                    <label for="contact_phone" class="form-label">Contact Phone <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control form-control-lg @error('contact_phone') is-invalid @enderror" id="contact_phone" name="contact_phone" value="{{ old('contact_phone') }}" required />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="shipping_address" class="form-label">Shipping Address <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control form-control-lg @error('shipping_address') is-invalid @enderror" id="shipping_address" name="shipping_address" value="{{ old('shipping_address') }}" required />
+                                </div>
                             </div>
                             <div class="mb-3">
-                                <label for="contact_phone" class="form-label">Contact Phone <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control form-control-lg @error('contact_phone') is-invalid @enderror" id="contact_phone" name="contact_phone" required />
-                                @error('contact_phone')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <label for="notes" class="form-label">Order Notes (Optional)</label>
+                                <textarea class="form-control form-control-lg" id="notes" name="notes" rows="2">{{ old('notes') }}</textarea>
                             </div>
-                            <div class="mb-3">
-                                <label for="shipping_address" class="form-label">Shipping Address <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control form-control-lg @error('shipping_address') is-invalid @enderror" id="shipping_address" name="shipping_address" required />
-                                @error('shipping_address')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                        </div>
+                    </div>
+
+                    {{-- Section 2: Shipping Method (NEW - Professional Cards) --}}
+                    <div class="d-flex align-items-start mb-4 pt-3">
+                        <div class="d-flex align-items-center justify-content-center bg-primary text-white rounded-circle fs-sm fw-semibold lh-1 flex-shrink-0" style="width:2rem; height:2rem;">2</div>
+                        <div class="w-100 ps-3 ps-md-4">
+                            <h2 class="h5 mb-4">Shipping Method</h2>
+                            <div class="row g-3">
+                                <div class="col-sm-4">
+                                    <input type="radio" class="btn-check" name="shipping_type" id="ship-free" value="free" data-rate="0" checked>
+                                    <label class="btn btn-outline-secondary d-block w-100 h-100 p-3 text-start shadow-sm" for="ship-free">
+                                        <span class="d-block fw-bold mb-1">Free Shipping</span>
+                                        <span class="d-block fs-xs text-body-secondary mb-2">3-5 days</span>
+                                        <span class="d-block fw-medium text-success">$0.00</span>
+                                    </label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="radio" class="btn-check" name="shipping_type" id="ship-fast" value="fast" data-rate="0.1">
+                                    <label class="btn btn-outline-secondary d-block w-100 h-100 p-3 text-start shadow-sm" for="ship-fast">
+                                        <span class="d-block fw-bold mb-1">Fast Shipping</span>
+                                        <span class="d-block fs-xs text-body-secondary mb-2">1-2 days</span>
+                                        <span class="d-block fw-medium text-dark">+10% fee</span>
+                                    </label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="radio" class="btn-check" name="shipping_type" id="ship-express" value="express" data-rate="0.25">
+                                    <label class="btn btn-outline-secondary d-block w-100 h-100 p-3 text-start shadow-sm" for="ship-express">
+                                        <span class="d-block fw-bold mb-1">Express Shipping</span>
+                                        <span class="d-block fs-xs text-body-secondary mb-2">Within 24h</span>
+                                        <span class="d-block fw-medium text-dark">+25% fee</span>
+                                    </label>
+                                </div>
                             </div>
-                            </div>
+                        </div>
                     </div>
                     
+                    {{-- Section 3: Payment Information --}}
                     <div class="d-flex align-items-start pt-3">
                         <div class="d-flex align-items-center justify-content-center bg-primary text-white rounded-circle fs-sm fw-semibold lh-1 flex-shrink-0" style="width:2rem; height:2rem; margin-top:-.125rem">2</div>
                         <div class="w-100 ps-3 ps-md-4">
-                            <h2 class="h5 mb-0">Payment Information</h2>
+                            <h2 class="h5 mb-0">Payment Method</h2>
                             <div class="mb-4" id="paymentMethod" role="list">
                                 <div class="mt-4">
                                     <div class="form-check mb-0" role="listitem">
@@ -97,52 +132,38 @@
                                 </label>
                             </div>
                             
-                            <button type="submit" class="btn btn-lg btn-primary w-100 d-none d-lg-flex mt-4">
+                            <button type="submit" id="btn-total-display" class="btn btn-lg btn-primary w-100 d-none d-lg-flex mt-4">
                                 Pay ${{ Cart::total() ?? 0 }}
                             </button>
                         </div>
                     </div>
                 </form>
-                </div>
+            </div>
             
+            {{-- Order Summary Sidebar --}}
             <aside class="col-lg-4 offset-xl-1" style="margin-top:-100px">
                 <div class="position-sticky top-0" style="padding-top:100px">
-                    <div class="bg-body-tertiary rounded-5 p-4 mb-3">
+                    <div class="bg-body-tertiary rounded-5 p-4 mb-3 shadow-sm border">
                         <div class="p-sm-2 p-lg-0 p-xl-2">
-                            <div class="border-bottom pb-4 mb-4">
-                                <div class="d-flex align-items-center justify-content-between mb-4">
-                                    <h5 class="mb-0">Order Summary</h5>
-                                </div>
-                                <a class="d-flex align-items-center gap-2 text-decoration-none" href="#orderPreview" data-bs-toggle="offcanvas">
-                                    @foreach(Cart::content() as $value)
-                                    <div class="ratio ratio-1x1" style="max-width:64px">
-                                        <img src="{{ asset('storage/app/private/' . $value->options->image ) }}" class="d-block p-1" alt="{{ $value->name }}" />
-                                    </div>
-                                    @endforeach<i class="ci-chevron-right text-body fs-xl p-0 ms-auto"></i>
-                                </a>
-                            </div>
+                            <h5 class="mb-4">Order Summary</h5>
                             <ul class="list-unstyled fs-sm gap-3 mb-0">
                                 <li class="d-flex justify-content-between">
-                                    Subtotal ({{ Cart::count() ?? 0 }} products):
+                                    <span>Subtotal ({{ Cart::count() }} items):</span>
                                     <span class="text-dark-emphasis fw-medium">${{ number_format(Cart::priceTotal(), 2) }}</span>
                                 </li>
                                 <li class="d-flex justify-content-between">
-                                    Discount:
-                                    <span class="text-danger fw-medium">-${{ number_format(Cart::discount(), 2) }}</span>
-                                </li>
-                                <li class="d-flex justify-content-between">
-                                    VAT (10%):
+                                    <span>VAT (10%):</span>
                                     <span class="text-dark-emphasis fw-medium">${{ number_format(Cart::tax(), 2) }}</span>
                                 </li>
-                                <li class="d-flex justify-content-between">
-                                    Shipping Fee:
-                                    <span class="text-dark-emphasis fw-medium">$0.00</span>
+                                <li class="d-flex justify-content-between border-bottom pb-3">
+                                    <span>Shipping Fee:</span>
+                                    <span class="text-dark-emphasis fw-medium" id="summary-shipping-fee">$0.00</span>
                                 </li>
                             </ul>
-                            <div class="border-top pt-4 mt-4">
+                            <div class="pt-3 mt-3">
                                 <div class="d-flex justify-content-between mb-3">
-                                    <span class="fs-sm">Total:</span>
-                                    <span class="h5 mb-0">${{ Cart::total() }}</span>
+                                    <span class="fw-bold fs-base">Total Amount:</span>
+                                    <span class="h4 mb-0 fw-bold text-primary" id="summary-total-amount">${{ Cart::total() }}</span>
                                 </div>
                             </div>
                         </div>
@@ -151,13 +172,38 @@
             </aside>
         </div>
     </div>
-    <div class="offcanvas offcanvas-end pb-sm-2 px-sm-2" id="orderPreview" tabindex="-1" style="width:500px">
-        </div>
 </main>
-@endsection
 
-@section('floating-button')
-<div class="fixed-bottom z-sticky w-100 py-2 px-3 bg-body border-top shadow d-lg-none">
-    <button type="submit" form="checkout-form" class="btn btn-lg btn-primary w-100">Pay ${{ Cart::total() ?? 0 }}</button>
-</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Lấy số liệu gốc từ Cart 
+    const subtotal = parseFloat("{{ str_replace(',', '', Cart::priceTotal()) }}");
+    const tax = parseFloat("{{ str_replace(',', '', Cart::tax()) }}");
+    
+    const shippingRadios = document.querySelectorAll('input[name="shipping_type"]');
+    const shippingDisplay = document.getElementById('summary-shipping-fee');
+    const totalDisplay = document.getElementById('summary-total-amount');
+    const btnTotalDisplay = document.getElementById('btn-total-display');
+
+    function updatePrice() {
+        let rate = 0;
+        shippingRadios.forEach(radio => {
+            if (radio.checked) rate = parseFloat(radio.dataset.rate);
+        });
+
+        const shippingFee = subtotal * rate;
+        const finalTotal = subtotal + tax + shippingFee;
+
+        // Hiển thị định dạng tiền tệ
+        const formatCurrency = (val) => '$' + val.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+        shippingDisplay.innerText = formatCurrency(shippingFee);
+        totalDisplay.innerText = formatCurrency(finalTotal);
+        if(btnTotalDisplay) btnTotalDisplay.innerText = formatCurrency(finalTotal);
+    }
+
+    shippingRadios.forEach(radio => radio.addEventListener('change', updatePrice));
+    updatePrice(); // Chạy lần đầu
+});
+</script>
 @endsection

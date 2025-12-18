@@ -1,38 +1,34 @@
 @extends('layouts.frontend')
-@section('title', 'Shopping Card')
+@section('title', 'Shopping Cart')
 @section('content')
-<!-- Page content -->
 <main class="content-wrapper">
     <nav class="container pt-3 my-3">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('frontend.home') }}">Home Page</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('frontend.products') }}">Product</a></li>
-            <li class="breadcrumb-item active">Giỏ hàng</li>
+            <li class="breadcrumb-item"><a href="{{ route('frontend.products') }}">Products</a></li>
+            <li class="breadcrumb-item active">Shopping Cart</li>
         </ol>
     </nav>
     <section class="container mb-3">
-        <h1 class="h3 mb-2">Giỏ hàng</h1>
+        <h1 class="h3 mb-2">Shopping Cart</h1>
         <div class="row">
-            <!-- Items list -->
             <div class="col-lg-8">
                 <div class="pe-lg-2 pe-xl-3 me-xl-3">
-                    <!-- Table of items -->
                     <table class="table position-relative z-2 mb-4">
                         <thead>
                             <tr>
-                                <th scope="col" class="fs-sm fw-normal py-3 ps-0"><span class="text-body">Sản phẩm</span></th>
-                                <th scope="col" class="text-body fs-sm fw-normal py-3 d-none d-xl-table-cell"><span class="text-body">Đơn giá</span></th>
-                                <th scope="col" class="text-body fs-sm fw-normal py-3 d-none d-md-table-cell"><span class="text-body">Số lượng</span></th>
-                                <th scope="col" class="text-body fs-sm fw-normal py-3 d-none d-md-table-cell"><span class="text-body">Thành tiền</span></th>
+                                <th scope="col" class="fs-sm fw-normal py-3 ps-0"><span class="text-body">Product</span></th>
+                                <th scope="col" class="text-body fs-sm fw-normal py-3 d-none d-xl-table-cell"><span class="text-body">Price</span></th>
+                                <th scope="col" class="text-body fs-sm fw-normal py-3 d-none d-md-table-cell"><span class="text-body">Quantity</span></th>
+                                <th scope="col" class="text-body fs-sm fw-normal py-3 d-none d-md-table-cell"><span class="text-body">Subtotal</span></th>
                                 <th scope="col" class="py-0 px-0">
                                     <div class="nav justify-content-end">
-                                        <button type="button" class="nav-link d-inline-block text-decoration-underline text-nowrap py-3 px-0">Xóa</button>
+                                        <button type="button" class="nav-link d-inline-block text-decoration-underline text-nowrap py-3 px-0">Clear Cart</button>
                                     </div>
                                 </th>
                             </tr>
                         </thead>
                         <tbody class="align-middle">
-                            <!-- Item -->
                             @foreach(Cart::content() as $value)
                             <tr>
                                 <td class="py-3 ps-0">
@@ -46,8 +42,8 @@
                                             </h5>
                                             <ul class="list-unstyled gap-1 fs-xs mb-0">
                                                 <li class="d-xl-none">
-                                                    <span class="text-body-secondary">Đơn giá:</span>
-                                                    <span class="text-dark-emphasis fw-medium">{{ number_format($value->price, 0, ',', '.') }}<small>đ</small></span>
+                                                    <span class="text-body-secondary">Price:</span>
+                                                    <span class="text-dark-emphasis fw-medium">${{ number_format($value->price, 0, ',', '.') }}</span>
                                                 </li>
                                             </ul>
                                             <div class="count-input rounded-2 d-md-none mt-3">
@@ -62,7 +58,7 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="h6 py-3 d-none d-xl-table-cell">{{ number_format($value->price, 0, ',', '.') }}<small>$</small></td>
+                                <td class="h6 py-3 d-none d-xl-table-cell">${{ number_format($value->price, 0, ',', '.') }}</td>
                                 <td class="py-3 d-none d-md-table-cell">
                                     <div class="count-input">
                                         <a href="{{ route('frontend.shoppingcard.decrease', ['row_id' => $value->rowId]) }}" class="btn btn-icon" data-decrement>
@@ -74,9 +70,9 @@
                                         </a>
                                     </div>
                                 </td>
-                                <td class="h6 py-3 d-none d-md-table-cell">{{ number_format($value->price * $value->qty, 0, ',', '.') }}<small>$</small></td>
+                                <td class="h6 py-3 d-none d-md-table-cell">${{ number_format($value->price * $value->qty, 0, ',', '.') }}</td>
                                 <td class="text-end py-3 px-0">
-                                    <a href="{{ route('frontend.shoppingcard.delete', ['row_id' => $value->rowId]) }}" class="btn-close fs-sm" data-bs-toggle="tooltip" data-bs-custom-class="tooltip-sm" data-bs-title="Xóa khỏi giỏ"></a>
+                                    <a href="{{ route('frontend.shoppingcard.delete', ['row_id' => $value->rowId]) }}" class="btn-close fs-sm" data-bs-toggle="tooltip" data-bs-custom-class="tooltip-sm" data-bs-title="Remove"></a>
                                 </td>
                             </tr>
                             @endforeach
@@ -85,42 +81,41 @@
                     <div class="nav position-relative z-2 mb-4 mb-lg-0">
                         <a class="nav-link animate-underline px-0" href="{{ route('frontend.home') }}">
                             <i class="ci-chevron-left fs-lg me-1"></i>
-                            <span class="animate-target">Tiếp tục mua hàng</span>
+                            <span class="animate-target">Continue shopping</span>
                         </a>
                     </div>
                 </div>
             </div>
-            <!-- Order summary (sticky sidebar) -->
             <aside class="col-lg-4" style="margin-top:-100px">
                 <div class="position-sticky top-0" style="padding-top:100px">
                     <div class="bg-body-tertiary rounded-5 p-4 mb-3">
                         <div class="p-sm-2 p-lg-0 p-xl-2">
-                            <h5 class="border-bottom pb-4 mb-4">Tóm tắt đơn hàng</h5>
+                            <h5 class="border-bottom pb-4 mb-4">Order Summary</h5>
                             <ul class="list-unstyled fs-sm gap-3 mb-0">
                                 <li class="d-flex justify-content-between">
                                     Total Price ({{ Cart::count() ?? 0 }} products):
-                                    <span class="text-dark-emphasis fw-medium">{{ Cart::priceTotal() }}<small>đ</small></span>
+                                    <span class="text-dark-emphasis fw-medium">${{ Cart::priceTotal() }}</span>
                                 </li>
                                 <li class="d-flex justify-content-between">
-                                    Giảm giá:
-                                    <span class="text-danger fw-medium">{{ Cart::discount() }}<small>đ</small></span>
+                                    Discount:
+                                    <span class="text-danger fw-medium">-${{ Cart::discount() }}</span>
                                 </li>
                                 <li class="d-flex justify-content-between">
-                                    Thuế VAT:
-                                    <span class="text-dark-emphasis fw-medium">{{ Cart::tax() }}<small>đ</small></span>
+                                    Tax (VAT):
+                                    <span class="text-dark-emphasis fw-medium">${{ Cart::tax() }}</span>
                                 </li>
                                 <li class="d-flex justify-content-between">
-                                    Phí vận chuyển:
-                                    <span class="text-dark-emphasis fw-medium">Tính toán khi thanh toán</span>
+                                    Shipping Fee:
+                                    <span class="text-dark-emphasis fw-medium">Calculated at checkout</span>
                                 </li>
                             </ul>
                             <div class="border-top pt-4 mt-4">
                                 <div class="d-flex justify-content-between mb-3">
-                                    <span class="fs-sm">Tổng ước tính:</span>
-                                    <span class="h5 mb-0">{{ Cart::total() }}<small>đ</small></span>
+                                    <span class="fs-sm">Estimated Total:</span>
+                                    <span class="h5 mb-0">${{ Cart::total() }}</span>
                                 </div>
                                 <a class="btn btn-lg btn-primary w-100" href="{{ route('user.place-order') }}">
-                                    Tiến hành thanh toán
+                                    Proceed to checkout
                                     <i class="ci-chevron-right fs-lg ms-1 me-n1"></i>
                                 </a>
                             </div>

@@ -21,11 +21,12 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 
-// Google OAuth
+/*/ Google OAuth
 Route::get('/login/google', [HomeController::class, 'getGoogleLogin'])->name('google.login');
 Route::get('/login/google/callback', [HomeController::class, 'getGoogleCallback'])->name('google.callback');
 
 // Custom Login/Register routes with proper POST methods
+Route::get('/login', fn() => redirect()->route('user.login'))->name('login');
 Route::get('/user/login', [HomeController::class, 'getLogin'])->name('user.login');
 Route::post('/user/login', [LoginController::class, 'login'])->name('user.login.post');
 Route::post('/user/logout', [LoginController::class, 'logout'])->name('user.logout');
@@ -37,7 +38,27 @@ Route::get('/password/reset', [ForgotPasswordController::class, 'showLinkRequest
 Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+*/
 
+Route::middleware('guest')->group(function () {
+    // Google OAuth
+    Route::get('/login/google', [HomeController::class, 'getGoogleLogin'])->name('google.login');
+    Route::get('/login/google/callback', [HomeController::class, 'getGoogleCallback'])->name('google.callback');
+
+    // Login/Register routes
+    Route::get('/login', fn() => redirect()->route('user.login'))->name('login');
+    Route::get('/user/login', [HomeController::class, 'getLogin'])->name('user.login');
+    Route::post('/user/login', [LoginController::class, 'login'])->name('user.login.post');
+    Route::get('/user/register', [HomeController::class, 'getRegister'])->name('user.register');
+    Route::post('/user/register', [RegisterController::class, 'register'])->name('user.register.post');
+
+    // Password reset routes 
+    Route::get('/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+});
+Route::post('/user/logout', [LoginController::class, 'logout'])->name('user.logout')->middleware('auth');
 
 // Pages for logged-out guests
 Route::name('frontend.')->group(function () {

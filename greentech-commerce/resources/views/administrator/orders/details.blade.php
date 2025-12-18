@@ -76,7 +76,7 @@
         document.getElementById('detailOrderId').textContent = '#' + orderData.id;
         document.getElementById('detailUserName').textContent = orderData.user ? orderData.user.name : 'Guest';
         document.getElementById('detailStatus').textContent = orderData.status ? orderData.status.name : 'N/A';
-        document.getElementById('detailStatus').className = 'badge status-' + (orderData.status ? orderData.status.name.toLowerCase().replace(/ /g, '-') : 'na');
+        //document.getElementById('detailStatus').className = 'badge status-' + (orderData.status ? orderData.status.name.toLowerCase().replace(/ /g, '-') : 'na');
         
         // Format ngày tháng
         const createdDate = new Date(orderData.created_at);
@@ -113,7 +113,7 @@
             `;
         });
         document.getElementById('detailItemCount').textContent = orderData.items.length;
-
+        
 
         // 4. Hiển thị Modal
         const orderDetailModal = new bootstrap.Modal(modalElement);

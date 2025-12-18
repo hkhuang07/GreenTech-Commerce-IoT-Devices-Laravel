@@ -7,11 +7,16 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'GreenTech') }}</title>
 
+    <link rel="preload" href="{{ asset('public/images/favicon.ico') }}" as="image" type="image/x-icon">
+    <link rel="icon" type="image/x-icon" href="{{ asset('public/images/favicon.ico') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('public/images/favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('public/images/favicon.ico') }}">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="{{ asset('public/css/layout.css') }}" />
     <link rel="stylesheet" href="{{ asset('public/vendor/font-awesome/css/all.min.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     @yield('styles')
 
 </head>
@@ -250,6 +255,11 @@
                             <li><a class="dropdown-item" href="{{ route('user.register') }}">
                                     <i class="fas fa-user-plus"></i> Register
                                 </a></li>
+                            <li>
+                                <a class="dropdown-item" href="{{route('password.update')}}">
+                                    <i class="fas fa-key"></i> Reset Password
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     @else
@@ -258,12 +268,11 @@
                             <i class="fas fa-user-circle"></i> {{ Auth::user()->name }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#">
+                            <li>
+                                <a class="dropdown-item" href="{{route('user.profile')}}">
                                     <i class="fas fa-user"></i> Profile
-                                </a></li>
-                            <li><a class="dropdown-item" href="#">
-                                    <i class="fas fa-cog"></i> Settings
-                                </a></li>
+                                </a>
+                            </li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

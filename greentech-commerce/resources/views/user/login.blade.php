@@ -9,147 +9,170 @@
 
     <link rel="stylesheet" href="{{ asset('public/assets/vendor/font-awesome/css/all.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('public/assets/icons/cartzilla-icons.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('public/assets/css/theme.min.css') }}" id="theme-styles" />
-
-    <link rel="stylesheet" href="{{ asset('public/css/form.css') }}" />
-    <link rel="stylesheet" href="{{ asset('public/css/layout.css') }}" />
+    <link rel="stylesheet" href="{{ asset('public/css/auth.css') }}" />
 </head>
 
-<body>
-    <main class="content-wrapper w-100 auth-container-greentech">
-        <div class="d-lg-flex">
+<body class="auth-container-greentech">
+    <main class="content-wrapper w-100">
+        <div class="auth-container">
+            <!-- Background với hiệu ứng gradient và blur -->
+            <div class="auth-background"></div>
 
-            <div class="d-flex flex-column min-vh-100 w-100 py-4 px-3 px-lg-0 auth-form-section">
-
-                <header class="navbar px-0 pb-4 mt-n2 mt-sm-0 mb-2 mb-md-3 mb-lg-4">
-                    <a href="{{ route('frontend.home') }}" class="navbar-brand pt-0 d-flex align-items-center">
-                        <span class="d-flex flex-shrink-0 text-primary me-2 auth-logo-greentech">
-                            <img src="{{ asset('public/images/greentech-logo.jpg') }}" alt="{{ config('app.name', 'GreenTech') }} Logo" />
-                        </span>
-                        <span class="fw-bold fs-5">{{ config('app.name', 'GreenTech') }}</span>
-                    </a>
-                </header>
-
-                <h1 class="h2 mt-auto">Sign In to GreenTech</h1>
-
-                <div class="nav fs-sm mb-4">
-                    Don't have an account yet?
-                    <a class="nav-link text-decoration-underline p-0 ms-2" href="{{ route('user.register') }}">Create an account</a>
+            <div class="auth-card">
+                <!-- Phần bên trái - Chào mừng và slogan -->
+                <div class="auth-welcome">
+                    <div class="welcome-overlay"></div>
+                    <div class="welcome-content">
+                        <h1>Welcome to GreenTech</h1>
+                        <p class="welcome-motto">Smart Agriculture, Fueling Markets!</p>
+                    </div>
                 </div>
 
-                @if(session('warning'))
-                <div class="alert d-flex alert-danger" role="alert">
-                    <i class="ci-banned fs-lg pe-1 mt-1 me-2"></i>
-                    <div>{{ session('warning') }}</div>
-                </div>
-                @endif
-                @if (session('status'))
-                <div class="alert d-flex alert-success" role="alert">
-                    <i class="ci-check-circle fs-lg pe-1 mt-1 me-2"></i>
-                    <div>{{ session('status') }}</div>
-                </div>
-                @endif
-                @if (session('success'))
-                <div class="alert d-flex alert-success" role="alert">
-                    <i class="ci-check-circle fs-lg pe-1 mt-1 me-2"></i>
-                    <div>{{ session('success') }}</div>
-                </div>
-                @endif
+                <!-- Phần bên phải - Form Đăng nhập -->
+                <div class="auth-form-section">
+                    <!-- Header: Logo + GreenTech bên trái, Register bên phải -->
+                    <div class="auth-form-header">
+                        <a href="{{ route('frontend.home') }}" class="navbar-brand">
+                            <span class="d-flex flex-shrink-0 text-primary me-2 auth-logo-greentech">
+                                <img src="{{ asset('public/images/greentech-logo.jpg') }}" alt="Logo" />
+                            </span>
+                            <span class="greentech-title-header">GreenTech</span>
+                        </a>
+                        
+                        <a href="{{ route('user.register') }}" class="register-link">
+                            Register
+                        </a>
+                    </div>
 
-                <form method="post" action="{{ route('user.login.post') }}" class="needs-validation" novalidate id="loginForm">
-                    @csrf
+                    <h2 class="auth-form-title">Login</h2>
 
-                    <div class="position-relative mb-4">
-                        <input type="text"
-                            class="form-control form-control-lg auth-input {{ ($errors->has('email') || $errors->has('username') || $errors->has('login')) ? 'is-invalid' : '' }}"
-                            id="email"
-                            name="email"
-                            value="{{ old('email') }}"
-                            placeholder="Email, Username, or Phone Number"
-                            required />
+                    <!-- Success/Error Messages -->
+                    @if(session('warning'))
+                    <div class="auth-message auth-error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        {{ session('warning') }}
+                    </div>
+                    @endif
+
+                    @if (session('status'))
+                    <div class="auth-message auth-success">
+                        <i class="fas fa-check-circle"></i>
+                        {{ session('status') }}
+                    </div>
+                    @endif
+
+                    @if (session('success'))
+                    <div class="auth-message auth-success">
+                        <i class="fas fa-check-circle"></i>
+                        {{ session('success') }}
+                    </div>
+                    @endif
+
+                    <form method="post" action="{{ route('user.login.post') }}" class="auth-form needs-validation" novalidate id="loginForm">
+                        @csrf
+
+                        <!-- Trường Username/Email/Phone -->
+                        <div class="auth-input-group">
+                            <i class="fas fa-user auth-input-icon"></i>
+                            <input
+                                type="text"
+                                name="email"
+                                placeholder="Email, Username, ID Card or Phone Number"
+                                value="{{ old('email') }}"
+                                class="auth-input form-control-lg @error('email') auth-input-error @enderror"
+                                required
+                                autocomplete="login"
+                                autofocus>
+                        </div>
                         @error('email')
-                        <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        <div class="auth-message auth-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            {{ $message }}
+                        </div>
                         @enderror
                         @error('username')
-                        <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        <div class="auth-message auth-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            {{ $message }}
+                        </div>
                         @enderror
                         @error('login')
-                        <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        <div class="auth-message auth-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            {{ $message }}
+                        </div>
                         @enderror
-                    </div>
 
-                    <div class="mb-4">
-                        <div class="password-toggle">
-                            <input type="password"
-                                class="form-control form-control-lg auth-input {{ $errors->has('password') ? 'is-invalid' : '' }}"
-                                id="password"
+                        <!-- Trường Password -->
+                        <div class="auth-input-group">
+                            <i class="fas fa-lock auth-input-icon"></i>
+                            <input
+                                type="password"
                                 name="password"
                                 placeholder="Password"
-                                required />
-                            @error('password')
-                            <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
-                            @enderror
-                            <label class="password-toggle-button fs-lg">
-                                <input type="checkbox" class="btn-check" />
-                            </label>
+                                class="auth-input form-control-lg @error('password') auth-input-error @enderror"
+                                required
+                                autocomplete="current-password">
                         </div>
-                    </div>
+                        @error('password')
+                        <div class="auth-message auth-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            {{ $message }}
+                        </div>
+                        @enderror
 
-                    <div class="d-flex align-items-center justify-content-between mb-4">
-                        <div class="form-check me-2">
-                            <input class="form-check-input" type="checkbox" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }} />
-                            <label for="remember" class="form-check-label">Remember me</label>
+                        <!-- Liên kết đổi mật khẩu -->
+                        <div class="auth-form-links">
+                            @if (Route::has('password.request'))
+                            <a href="{{ route('password.request') }}" class="auth-link">
+                                Forgot Password?
+                            </a>
+                            @endif
                         </div>
-                        @if (Route::has('password.request'))
-                        <div class="nav">
-                            <a class="nav-link animate-underline p-0" href="{{ route('password.request') }}">
-                                <span class="animate-target">Forgot your password?</span>
+
+                        <!-- Remember Me -->
+                        <div class="auth-remember">
+                            <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+                            <label for="remember" class="auth-remember-label">Remember Me</label>
+                        </div>
+
+                        <!-- Nút Login -->
+                        <button type="submit" class="auth-btn-login" id="loginButton" disabled>
+                            <span class="btn-text">Log In</span>
+                            <span class="btn-loading">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </span>
+                        </button>
+                    </form>
+
+                    <!-- Social Login Section -->
+                    <div class="social-login-section">
+                        <div class="social-login-buttons">
+                            <a href="{{ route('google.login') }}" class="social-btn btn-google">
+                                <i class="fab fa-google"></i>
+                                <span>Google</span>
+                            </a>
+                            <a href="#" class="social-btn btn-facebook">
+                                <i class="fab fa-facebook-f"></i>
+                                <span>Facebook</span>
+                            </a>
+                            <a href="#" class="social-btn btn-apple">
+                                <i class="fab fa-apple"></i>
+                                <span>Apple</span>
                             </a>
                         </div>
-                        @endif
                     </div>
 
-                    <button type="submit" class="auth-btn-login btn btn-lg btn-primary w-100" id="loginButton">
-                        <span class="btn-text">Log In</span>
-                        <span class="btn-loading" style="display: none;">
-                            <i class="fas fa-spinner fa-spin"></i>
-                        </span>
-                    </button>
-                </form>
+                    <!-- Register Link -->
+                    <p class="auth-register-text">
+                        Don't have an account yet?
+                        <a href="{{ route('user.register') }}">Sign Up</a>
+                    </p>
 
-                <div class="d-flex align-items-center my-4">
-                    <hr class="w-100 m-0">
-                    <span class="text-body-emphasis fw-medium text-nowrap mx-4">or sign in with</span>
-                    <hr class="w-100 m-0">
-                </div>
-
-                <div class="d-flex flex-column flex-sm-row gap-3 pb-4 mb-3 mb-lg-4">
-                    <a href="{{ route('google.login') }}" class="btn btn-lg btn-outline-secondary w-100 px-2">
-                        <i class="ci-google ms-1 me-1"></i> Google
-                    </a>
-                    <a href="#" class="btn btn-lg btn-outline-secondary w-100 px-2">
-                        <i class="ci-facebook ms-1 me-1"></i> Facebook
-                    </a>
-                    <a href="#" class="btn btn-lg btn-outline-secondary w-100 px-2">
-                        <i class="ci-apple ms-1 me-1"></i> Apple
-                    </a>
-                </div>
-
-                <!--footer class="mt-auto">
-                   
-                </footer-->
-                <p class="fs-xs mb-0">
-                    Copyright &copy; by <span class="animate-underline"><a class="animate-target text-dark-emphasis text-decoration-none" href="#" target="_blank">{{ config('app.name', 'GreenTech') }}</a></span>.
-                </p>
-            </div>
-
-            <div class="d-none d-lg-block w-100 py-4 ms-auto auth-cover-greentech" style="max-width:1034px">
-                <div class="d-flex flex-column justify-content-center h-100 rounded-5 overflow-hidden">
-                    <div class="text-center p-5 auth-welcome-content">
-                        <h1 class="display-3 fw-bold mb-3">GreenTech IoT</h1>
-                        <p class="lead fw-medium">Smart Agriculture, Fueling Markets.</p>
-
-                    </div>
+                    <!-- Footer -->
+                    <p class="fs-xs mb-0 mt-4 text-center">
+                        Copyright &copy; by <a href="#" target="_blank">{{ config('app.name', 'GreenTech') }}</a>. Sign In. Privacy policy
+                    </p>
                 </div>
             </div>
         </div>
@@ -159,27 +182,41 @@
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('loginForm');
             const button = document.getElementById('loginButton');
-            const loginInput = form.querySelector('input[name="email"]'); // Dùng 'email' vì bạn dùng chung cho username/email
-            const passwordInput = form.querySelector('input[name="password"]');
+            const inputs = form.querySelectorAll('.auth-input');
 
-            // 1. Kích hoạt/Vô hiệu hóa nút
+            // Enable button only when all required fields are filled
             function checkFormValidity() {
+                const loginInput = form.querySelector('input[name="email"]');
+                const passwordInput = form.querySelector('input[name="password"]');
+
                 const isValid = loginInput.value.trim() !== '' && passwordInput.value.trim() !== '';
                 button.disabled = !isValid;
             }
 
-            loginInput.addEventListener('input', checkFormValidity);
-            passwordInput.addEventListener('input', checkFormValidity);
+            // Check validity on input
+            inputs.forEach(input => {
+                input.addEventListener('input', checkFormValidity);
+                input.addEventListener('change', checkFormValidity);
+            });
+
+            // Initial check
             checkFormValidity();
 
-            // 2. Form submission handling (Hiển thị Spinner)
+            // Form submission handling
             form.addEventListener('submit', function(e) {
-                if (!button.disabled) {
-                    // Chỉ kích hoạt loading nếu form hợp lệ
-                    button.disabled = true;
-                    button.querySelector('.btn-text').style.display = 'none';
-                    button.querySelector('.btn-loading').style.display = 'inline-block';
-                }
+                button.disabled = true;
+                button.classList.add('auth-btn-loading');
+            });
+
+            // Auto-hide messages after 5 seconds
+            const messages = document.querySelectorAll('.auth-message');
+            messages.forEach(message => {
+                setTimeout(() => {
+                    message.style.opacity = '0';
+                    setTimeout(() => {
+                        message.style.display = 'none';
+                    }, 300);
+                }, 5000);
             });
         });
     </script>

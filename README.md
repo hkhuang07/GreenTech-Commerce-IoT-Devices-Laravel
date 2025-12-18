@@ -39,7 +39,7 @@ The goal is to provide a professional distribution channel that meets the detail
 <p align="center">
   <img src="demo/shoppingcard.jpg" alt="role" width="900"/>
   <img src="demo/checkout.jpg" alt="users" width="900"/>
-  <img src="demo/thankyou.jpg" alt="users" width="900"/>
+  <img src="demo/thankyou01.jpg" alt="users" width="900"/>
   <br/>
   <em>Order & Payment Process</em>
 </p>

@@ -42,9 +42,9 @@
             @forelse($users as $user)
             <div class="item-card" data-user-id="{{ $user->id }}">
                 <div class="item-image-container">
-                    @if($user->avatar) && $user->avatar && file_exists(storage_path('app/private/' . $user->avatar)))
+                    @if($user->avatar) 
                     <img src="{{ asset('storage/app/private/'. $user->avatar) }}"
-                        alt="{{ $avatar->name }}"
+                        alt="{{ $user->avatar }}"
                         class="item-image"
                         loading="lazy">
                     @else
@@ -71,9 +71,9 @@
                             <button type="button"
                                 class="action-btn delete-btn"
                                 title="Delete User"
-                                onclick="openDeleteUserModal('{{ $user->id }}', {{ json_encode($user) }})">
+                                onclick="openDeleteUserModal('{{ $user->id }}')">
                                 <i class="fas fa-trash-alt"></i>
-                                <span>Delete</span>
+                                <span>Delete</span> 
                             </button>
                         </div>
                     </div>

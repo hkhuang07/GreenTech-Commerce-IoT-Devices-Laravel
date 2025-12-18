@@ -10,9 +10,8 @@
             </div>
 
             <div class="modal-body">
-                <form id="updateUserForm" action="" method="post">
+                <form id="updateUserForm" action="" method="post" enctype="multipart/form-data">
                     @csrf
-
                     <!-- Basic Info -->
                     <h6 class="mb-3 text-muted"><i class="fas fa-info-circle"></i> Basic Information</h6>
                     <div class="row">
@@ -190,64 +189,63 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const updateUserModal = document.getElementById('updateUserModal');
-    const updateUserForm = document.getElementById('updateUserForm');
-    const updateSubmitBtn = document.getElementById('updateSubmitBtn');
-    const btnText = updateSubmitBtn.querySelector('.btn-text');
-    const btnLoading = updateSubmitBtn.querySelector('.btn-loading');
+    document.addEventListener('DOMContentLoaded', function() {
+        const updateUserModal = document.getElementById('updateUserModal');
+        const updateUserForm = document.getElementById('updateUserForm');
+        const updateSubmitBtn = document.getElementById('updateSubmitBtn');
+        const btnText = updateSubmitBtn.querySelector('.btn-text');
+        const btnLoading = updateSubmitBtn.querySelector('.btn-loading');
 
-    updateUserModal.addEventListener('hidden.bs.modal', function() {
-        updateUserForm.reset();
-        const invalidInputs = updateUserForm.querySelectorAll('.is-invalid');
-        invalidInputs.forEach(input => input.classList.remove('is-invalid'));
-        document.getElementById('currentAvatarPreview').style.display = 'none';
-        updateSubmitBtn.disabled = false;
-        btnText.style.display = 'inline';
-        btnLoading.style.display = 'none';
+        updateUserModal.addEventListener('hidden.bs.modal', function() {
+            updateUserForm.reset();
+            const invalidInputs = updateUserForm.querySelectorAll('.is-invalid');
+            invalidInputs.forEach(input => input.classList.remove('is-invalid'));
+            document.getElementById('currentAvatarPreview').style.display = 'none';
+            updateSubmitBtn.disabled = false;
+            btnText.style.display = 'inline';
+            btnLoading.style.display = 'none';
+        });
+
+        updateUserForm.addEventListener('submit', function(e) {
+            updateSubmitBtn.disabled = true;
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline';
+        });
+
+        updateUserModal.addEventListener('shown.bs.modal', function() {
+            document.getElementById('update_name').focus();
+        });
     });
 
-    updateUserForm.addEventListener('submit', function(e) {
-        updateSubmitBtn.disabled = true;
-        btnText.style.display = 'none';
-        btnLoading.style.display = 'inline';
-    });
+    function openUpdateModal(userId, userData) {
+        const updateForm = document.getElementById('updateUserForm');
+        updateForm.action = `{{ route('administrator.users.update', ['id' => '__ID__']) }}`.replace('__ID__', userId);
 
-    updateUserModal.addEventListener('shown.bs.modal', function() {
-        document.getElementById('update_name').focus();
-    });
-});
+        document.getElementById('updateUserId').textContent = userId;
+        document.getElementById('update_name').value = userData.name || '';
+        document.getElementById('update_username').value = userData.username || '';
+        document.getElementById('update_email').value = userData.email || '';
+        document.getElementById('update_roles').value = userData.roles || '';
+        document.getElementById('update_is_active').checked = userData.is_active;
+        document.getElementById('update_phone').value = userData.phone || '';
+        document.getElementById('update_id_card').value = userData.id_card || '';
+        document.getElementById('update_address').value = userData.address || '';
+        document.getElementById('update_jobs').value = userData.jobs || '';
+        document.getElementById('update_company').value = userData.company || '';
+        document.getElementById('update_school').value = userData.school || '';
+        //document.getElementById('update_avatar').value = userData.avatar || '';
+        //document.getElementById('update_background').value = userData.background || '';
 
-function openUpdateModal(userId, userData) {
-    const updateForm = document.getElementById('updateUserForm');
-    updateForm.action = `{{ route('administrator.users.update', ['id' => '__ID__']) }}`.replace('__ID__', userId);
-    
-    document.getElementById('updateUserId').textContent = userId;
-    document.getElementById('update_name').value = userData.name || '';
-    document.getElementById('update_username').value = userData.username || '';
-    document.getElementById('update_email').value = userData.email || '';
-    document.getElementById('update_roles').value = userData.roles || '';
-    document.getElementById('update_is_active').checked = userData.is_active;
-    document.getElementById('update_phone').value = userData.phone || '';
-    document.getElementById('update_id_card').value = userData.id_card || '';
-    document.getElementById('update_address').value = userData.address || '';
-    document.getElementById('update_jobs').value = userData.jobs || '';
-    document.getElementById('update_company').value = userData.company || '';
-    document.getElementById('update_school').value = userData.school || '';
-    document.getElementById('update_avatar').value = userData.avatar || '';
-    document.getElementById('update_background').value = userData.background || '';
-    
-    // Show avatar preview
-    const avatarPreview = document.getElementById('currentAvatarPreview');
-    const avatarImg = document.getElementById('currentAvatar');
-    if (userData.avatar) {
-        avatarImg.src = userData.avatar;
-        avatarPreview.style.display = 'block';
-    } else {
-        avatarPreview.style.display = 'none';
+        // Show avatar preview
+        const avatarPreview = document.getElementById('currentAvatarPreview');
+        const avatarImg = document.getElementById('currentAvatar');
+        if (userData.avatar) {
+            avatarImg.src = `{{ asset('storage/app/private') }}/${userData.avatar}`;
+            avatarPreview.style.display = 'block';
+        } else {
+            avatarPreview.style.display = 'none';
+        }
+        const updateModal = new bootstrap.Modal(document.getElementById('updateUserModal'));
+        updateModal.show();
     }
-    
-    const updateModal = new bootstrap.Modal(document.getElementById('updateUserModal'));
-    updateModal.show();
-}
 </script>

@@ -27,7 +27,7 @@ class CustomersController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     public function getHome()
     {
         if (Auth::check()) {
@@ -93,18 +93,26 @@ class CustomersController extends Controller
 
         DB::beginTransaction();
         try {
-            $subtotal = Cart::priceTotal(2, '.', '');
-            $taxAmount = Cart::tax(2, '.', '');
-            $shippingFee = 0.00;
-            $totalAmount = Cart::total(2, '.', '');
+            $subtotal = (float) str_replace(',', '', Cart::priceTotal(2, '.', ''));
+            $taxAmount = (float) str_replace(',', '', Cart::tax(2, '.', ''));
+
+            // 2. Tính phí vận chuyển dựa trên lựa chọn
+            $shippingRate = 0;
+            if ($request->shipping_type === 'fast') {
+                $shippingRate = 0.10;
+            } elseif ($request->shipping_type === 'express') {
+                $shippingRate = 0.25;
+            }
+
+            $shippingFee = $subtotal * $shippingRate;
+            $totalAmount = $subtotal + $taxAmount + $shippingFee;
+            //$totalAmount = Cart::total(2, '.', '');
 
             $order = new Order();
             $order->user_id = Auth::user()->id;
             $order->order_status_id = $initialStatusId;
-
             $order->shipping_address = $request->shipping_address;
             $order->contact_phone = $request->contact_phone;
-
             $order->payment_method = $request->payment_method;
             $order->subtotal = $subtotal;
             $order->tax_amount = $taxAmount;
@@ -132,6 +140,7 @@ class CustomersController extends Controller
             } catch (\Exception $emailException) {
                 Log::warning('Failed to send order confirmation email for order ID ' . $order->id . ': ' . $emailException->getMessage());
             }
+            
             DB::commit();
             return redirect()->route('user.place-order-success')->with('success', 'Your order has been successfully placed.');
         } catch (\Exception $e) {
@@ -168,7 +177,7 @@ class CustomersController extends Controller
             return redirect()->route('user.login');
         }
         $user = Auth::user()->loadCount('orders');
-        
+
         $orderCount = $user->orders_count;
 
         return view('user.profile', compact('user'));

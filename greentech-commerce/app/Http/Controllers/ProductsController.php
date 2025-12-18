@@ -21,7 +21,7 @@ class ProductsController extends Controller
 {
     public function getList()
     {
-        $products = Product::with(['category', 'manufacturer', 'details', 'images'])->orderBy('created_at', 'asc')->get();
+        $products = Product::with(['category', 'manufacturer', 'details', 'images'])->orderBy('id','desc')->get();
         $categories = Category::all();
         $manufacturers = Manufacturer::all();
         return view('administrator.products.list', compact('products', 'categories', 'manufacturers'));

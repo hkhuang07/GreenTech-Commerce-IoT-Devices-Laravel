@@ -11,6 +11,10 @@
 
     <link rel="icon" type="image/jpg" href="{{ asset('public/images/greentech-logo') }}" sizes="32x32" />
     <link rel="apple-touch-icon" href="{{ asset('public/images/greentech-logo') }}" />
+    <link rel="preload" href="{{ asset('public/images/favicon.ico') }}" as="image" type="image/x-icon">
+    <link rel="icon" type="image/x-icon" href="{{ asset('public/images/favicon.ico') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('public/images/favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('public/images/favicon.ico') }}">
 
     <script src="{{ asset('public/assets/js/theme-switcher.js') }}"></script>
 
@@ -29,17 +33,35 @@
 
 <body>
     <div class="offcanvas offcanvas-top" id="searchBox" data-bs-backdrop="static" tabindex="-1">
-        <div class="offcanvas-header border-bottom p-0 py-lg-1">
-            <form class="container d-flex align-items-center" action="{{ route('frontend.search.products') }}" method="GET">
-                <input
-                    type="search"
-                    name="q" 
-                    class="form-control form-control-lg fs-lg border-0 rounded-0 py-3 ps-0"
-                    placeholder="What are you looking for?"
-                    data-autofocus="offcanvas"
-                    value="{{ request('q') }}" {{-- Giữ lại từ khóa tìm kiếm nếu có --}} />
-                <button type="reset" class="btn-close fs-lg" data-bs-dismiss="offcanvas"></button>
-            </form>
+        <div class="offcanvas-header nav border-top px-0 py-3 mt-3 d-md-none">
+            <ul class="navbar-nav w-100">
+                @guest
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center justify-content-center" href="{{ route('user.login') }}">
+                        <i class="ci-user fs-lg opacity-60 me-2"></i> Log In
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center justify-content-center" href="{{ route('user.register') }}">
+                        <i class="fas fa-user-plus fs-sm opacity-60 me-2"></i> Register
+                    </a>
+                </li>
+                @else
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center justify-content-center" href="#" data-bs-toggle="dropdown">
+                        <i class="ci-user fs-lg opacity-60 me-2"></i> {{ Auth::user()->name }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark text-center border-0 shadow-none">
+                        <li><a class="dropdown-item" href="{{ route('user.profile') }}"><i class="fas fa-user me-2"></i> Profile</a></li>
+                        <li><a class="dropdown-item" href="{{ route('user.logout') }}"
+                                onclick="event.preventDefault(); document.getElementById('logout-form-mobile').submit();">
+                                <i class="fas fa-sign-out-alt me-2"></i> Log Out
+                            </a></li>
+                        <form id="logout-form-mobile" action="{{ route('user.logout') }}" method="POST" class="d-none">@csrf</form>
+                    </ul>
+                </li>
+                @endguest
+            </ul>
         </div>
         <div class="offcanvas-body px-0">
             <div class="container text-center">
@@ -168,7 +190,6 @@
                                         {{ $manufacturer->name }}
                                     </a>
                                 </li>
-                                dd($globalManufactures)
                                 @endforeach
                                 @else
                                 <li><a class="dropdown-item" href="#">No Manufacturer</a></li>
@@ -194,10 +215,50 @@
                     </ul>
                 </div>
                 <div class="offcanvas-header nav border-top px-0 py-3 mt-3 d-md-none">
-                    <a class="nav-link justify-content-center w-100 d-flex align-items-center" href="{{ route('user.login') }}">
-                        <i class="ci-user fs-lg opacity-60 ms-n2 me-2"></i>
-                        My Account
-                    </a>
+                    <ul class="navbar-nav w-100">
+                        @guest
+                        {{-- Hiển thị khi chưa đăng nhập --}}
+                        <li class="nav-item w-100">
+                            <a class="nav-link justify-content-center d-flex align-items-center" href="{{ route('user.login') }}">
+                                <i class="ci-user fs-lg opacity-60 me-2"></i>
+                                Log In / Register
+                            </a>
+                        </li>
+                        @else
+                        {{-- Hiển thị khi đã đăng nhập --}}
+                        <li class="nav-item dropdown w-100">
+                            <a class="nav-link dropdown-toggle justify-content-center d-flex align-items-center" href="{{route('user.home')}}" data-bs-toggle="dropdown">
+                                <i class="ci-user fs-lg opacity-60 me-2"></i>
+                                {{ Auth::user()->name }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark text-center border-0 shadow-none w-100">
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('user.profile') }}">
+                                        <i class="fas fa-user-circle me-2"></i> Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('user.home') }}">
+                                        <i class="fas fa-shopping-basket me-2"></i> My Orders
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="{{ route('user.logout') }}"
+                                        onclick="event.preventDefault(); document.getElementById('logout-form-mobile').submit();">
+                                        <i class="fas fa-sign-out-alt me-2"></i> Log Out
+                                    </a>
+                                </li>
+                            </ul>
+                            {{-- Form logout ẩn dùng cho mobile --}}
+                            <form id="logout-form-mobile" action="{{ route('user.logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+                        </li>
+                        @endguest
+                    </ul>
                 </div>
             </nav>
 
@@ -239,10 +300,36 @@
 
 
 
-                <a class="btn btn-icon btn-lg fs-lg btn-outline-secondary border-0 rounded-circle animate-shake d-none d-md-inline-flex" href="{{ route('user.home') }}">
-                    <i class="ci-user animate-target"></i>
-                    <span class="visually-hidden">Account</span>
-                </a>
+                <div class="dropdown d-none d-md-inline-flex ms-1">
+                    <button type="button" class="btn btn-icon btn-lg fs-lg btn-outline-secondary border-0 rounded-circle animate-shake" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="ci-user animate-target"></i>
+                        <span class="visually-hidden">Account</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow" style="min-width: 200px">
+                        @guest
+                        <li><a class="dropdown-item" href="{{ route('user.login') }}"><i class="fas fa-sign-in-alt me-2"></i> Log In</a></li>
+                        <li><a class="dropdown-item" href="{{ route('user.register') }}"><i class="fas fa-user-plus me-2"></i> Register</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="{{ route('password.request') }}"><i class="fas fa-key me-2"></i> Forgot Password</a></li>
+                        @else
+                        <li class="dropdown-header fw-bold text-dark border-bottom mb-2 pb-2"><a class="nav-link" href="{{route('user.home')}}">{{ Auth::user()->name }}</a></li>
+                        <li><a class="dropdown-item" href="{{ route('user.profile') }}"><i class="fas fa-user me-2"></i> Profile</a></li>
+                        <li><a class="dropdown-item" href="{{ route('user.change-password') }}"><i class="fas fa-lock me-2"></i> Change Password</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="{{ route('user.logout') }}"
+                                onclick="event.preventDefault(); document.getElementById('logout-form-desktop').submit();">
+                                <i class="fas fa-sign-out-alt me-2"></i> Log Out
+                            </a>
+                        </li>
+                        <form id="logout-form-desktop" action="{{ route('user.logout') }}" method="POST" class="d-none">@csrf</form>
+                        @endguest
+                    </ul>
+                </div>
 
                 <button type="button" class="btn btn-icon btn-lg fs-xl btn-outline-secondary position-relative border-0 rounded-circle animate-scale" data-bs-toggle="offcanvas" data-bs-target="#shoppingCart">
                     <span class="position-absolute top-0 start-100 badge fs-xs text-bg-primary rounded-pill mt-1 ms-n4 z-2" style="--cz-badge-padding-y:.25em; --cz-badge-padding-x:.42em">{{ Cart::count() ?? 0 }}</span>

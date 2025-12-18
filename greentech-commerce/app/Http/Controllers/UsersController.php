@@ -38,26 +38,28 @@ class UsersController extends Controller
             'id_card' => ['nullable', 'unique:users,id_card', 'max:20'],
             'phone' => ['nullable', 'string', 'max:20'],
             'address' => ['nullable', 'string', 'max:255'],
-            'avatar' => ['nullable', 'string', 'max:255'],
-            'background' => ['nullable', 'string', 'max:255'],
             'jobs' => ['nullable', 'string', 'max:255'],
             'school' => ['nullable', 'string', 'max:255'],
             'company' => ['nullable', 'string', 'max:255'],
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'background' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
+
 
         $pathavt = null;
         if ($request->hasFile('avatar')) {
             $extension = $request->file('avatar')->extension();
             $filename = Str::slug($request->name, '-') . '.' . $extension;
-            $path = Storage::putFileAs('users', $request->file('avatar'), $filename);
+            $pathavt = Storage::putFileAs('users', $request->file('avatar'), $filename);
         }
-        
+
         $pathbg = null;
         if ($request->hasFile('background')) {
             $extension = $request->file('background')->extension();
             $filename = Str::slug($request->name, '-') . '.' . $extension;
-            $path = Storage::putFileAs('users', $request->file('background'), $filename);
+            $pathbg = Storage::putFileAs('users', $request->file('background'), $filename);
         }
+
 
         User::create([
             'name' => $request->name,
@@ -99,25 +101,25 @@ class UsersController extends Controller
             'id_card' => ['nullable', 'max:20', Rule::unique('users')->ignore($id)],
             'phone' => ['nullable', 'string', 'max:20'],
             'address' => ['nullable', 'string', 'max:255'],
-            'avatar' => ['nullable', 'string', 'max:255'],
-            'background' => ['nullable', 'string', 'max:255'],
             'jobs' => ['nullable', 'string', 'max:255'],
             'school' => ['nullable', 'string', 'max:255'],
             'company' => ['nullable', 'string', 'max:255'],
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'background' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
 
         $pathavt = null;
         if ($request->hasFile('avatar')) {
             $extension = $request->file('avatar')->extension();
             $filename = Str::slug($request->name, '-') . '.' . $extension;
-            $path = Storage::putFileAs('users', $request->file('avatar'), $filename);
+            $pathavt = Storage::putFileAs('users', $request->file('avatar'), $filename);
         }
-        
+
         $pathbg = null;
         if ($request->hasFile('background')) {
             $extension = $request->file('background')->extension();
             $filename = Str::slug($request->name, '-') . '.' . $extension;
-            $path = Storage::putFileAs('users', $request->file('background'), $filename);
+            $pathbg = Storage::putFileAs('users', $request->file('background'), $filename);
         }
 
         $user->name = $request->name;

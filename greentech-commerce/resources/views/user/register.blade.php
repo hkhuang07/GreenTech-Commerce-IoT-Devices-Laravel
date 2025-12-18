@@ -7,234 +7,287 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>Register an account | {{ config('app.name', 'GreenTech') }}</title>
 
-    {{-- Tải các tài nguyên cơ bản của Cartzilla --}}
-    <script src="{{ asset('public/assets/js/theme-switcher.js') }}"></script>
-    <link rel="preload" href="{{ asset('public/assets/fonts/inter-variable-latin.woff2') }}" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="{{ asset('public/assets/vendor/font-awesome/css/all.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('public/assets/icons/cartzilla-icons.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('public/assets/vendor/font-awesome/css/all.min.css') }}" /> {{-- Font Awesome cho spinner --}}
-    <link rel="stylesheet" href="{{ asset('public/assets/css/theme.min.css') }}" id="theme-styles" />
-
-    {{-- Tải các file CSS tùy chỉnh --}}
-    <link rel="stylesheet" href="{{ asset('public/css/form.css') }}" />
-    <link rel="stylesheet" href="{{ asset('public/css/layout.css') }}" />
-    <link rel="stylesheet" href="{{ asset('public/css/list.css') }}" /> 
-
+    <link rel="stylesheet" href="{{ asset('public/css/auth.css') }}" />
 </head>
 
 <body class="auth-container-greentech">
     <main class="content-wrapper w-100">
-        <div class="d-lg-flex">
+        <div class="auth-container">
+            <!-- Background với hiệu ứng gradient và blur -->
+            <div class="auth-regis-background"></div>
 
-            {{-- Cột Trái: Form Đăng ký (auth-form-section) --}}
-            <div class="d-flex flex-column min-vh-100 w-100 py-4 px-3 px-lg-0 mx-auto me-lg-5 auth-form-section" style="max-width:416px">
-
-                {{-- Logo --}}
-                <header class="navbar px-0 pb-4 mt-n2 mt-sm-0 mb-2 mb-md-3 mb-lg-4">
-                    <a href="{{ route('frontend.home') }}" class="navbar-brand pt-0 d-flex align-items-center">
-                        <span class="d-flex flex-shrink-0 text-primary me-2 auth-logo-greentech">
-                            <img src="{{ asset('public/images/greentech-logo.jpg') }}" alt="{{ config('app.name', 'GreenTech') }} Logo" />
-                        </span>
-                        <span class="fw-bold fs-5">{{ config('app.name', 'GreenTech') }}</span>
-                    </a>
-                </header>
-
-                <h1 class="h2 mt-auto">Create a New GreenTech Account</h1>
-
-                {{-- Link chuyển sang Login --}}
-                <div class="nav fs-sm mb-4">
-                    I already have an account.
-                    <a class="nav-link text-decoration-underline p-0 ms-2" href="{{ route('user.login') }}">Sign In</a>
+            <div class="auth-card">
+                <!-- Phần bên trái - Chào mừng và slogan -->
+                <div class="auth-regis-welcome">
+                    <div class="welcome-overlay"></div>
+                    <div class="welcome-content">
+                        <h1>Welcome to GreenTech</h1>
+                        <p class="welcome-motto">Smart Agriculture, Fueling Markets!</p>
+                    </div>
                 </div>
 
-                {{-- Hiển thị lỗi chung (dùng cấu trúc alert của Bootstrap) --}}
-                @if ($errors->any())
-                <div class="alert d-flex alert-danger" role="alert">
-                    <i class="ci-banned fs-lg pe-1 mt-1 me-2"></i>
-                    <div>{{ __('Registration failed. Please check the form fields.') }}</div>
-                </div>
-                @endif
+                <!-- Phần bên phải - Form Đăng ký -->
+                <div class="auth-form-section">
+                    <!-- Header: Logo + GreenTech bên trái, Login bên phải -->
+                    <div class="auth-form-header">
+                        <a href="{{ route('frontend.home') }}" class="navbar-brand">
+                            <span class="d-flex flex-shrink-0 text-primary me-2 auth-logo-greentech">
+                                <img src="{{ asset('public/images/greentech-logo.jpg') }}" alt="Logo" />
+                            </span>
+                            <span class="greentech-title-header">GreenTech</span>
+                        </a>
+                        
+                        <a href="{{ route('user.login') }}" class="register-link">
+                            Login
+                        </a>
+                    </div>
 
-                {{-- Form Đăng ký --}}
-                <form method="post" action="{{ route('user.register.post') }}" class="needs-validation" novalidate id="registerForm">
-                    @csrf
+                    <h2 class="auth-form-title">{{ __('Register') }}</h2>
 
-                    {{-- Full Name (Required) --}}
-                    <div class="position-relative mb-4">
-                        <!--label for="name" class="form-label">Full Name</label-->
-                        <input type="text"
-                            class="form-control form-control-lg @error('name') is-invalid @enderror"
-                            id="name"
-                            name="name"
-                            value="{{ old('name') }}"
-                            placeholder="Full Name"
-                            required />
+                    <!-- Error Messages -->
+                    @if ($errors->any())
+                    <div class="auth-message auth-error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        {{ __('Registration failed. Please check the form fields.') }}
+                    </div>
+                    @endif
+
+                    <form method="post" action="{{ route('user.register.post') }}" class="auth-form needs-validation" novalidate id="registerForm">
+                        @csrf
+
+                        <!-- Full Name -->
+                        <div class="auth-input-group">
+                            <i class="fas fa-user-circle auth-input-icon"></i>
+                            <input
+                                id="name"
+                                type="text"
+                                name="name"
+                                placeholder="{{ __('Full Name') }}"
+                                value="{{ old('name') }}"
+                                class="auth-input form-control-lg @error('name') auth-input-error @enderror"
+                                required
+                                autocomplete="name"
+                                autofocus>
+                        </div>
                         @error('name')
-                        <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        <div class="auth-message auth-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            {{ $message }}
+                        </div>
                         @enderror
-                    </div>
 
-                    {{-- Email (Required) --}}
-                    <div class="position-relative mb-4">
-                        <!--label for="email" class="form-label">Email Address</label-->
-                        <input type="email" class="form-control form-control-lg @error('email') is-invalid @enderror"
-                            id="email"
-                            name="email"
-                            value="{{ old('email') }}"
-                            placeholder="Email Address"
-                            autocomplete="off"
-                            required />
+                        <!-- Email -->
+                        <div class="auth-input-group">
+                            <i class="fas fa-envelope auth-input-icon"></i>
+                            <input
+                                id="email"
+                                type="email"
+                                name="email"
+                                placeholder="{{ __('Email Address') }}"
+                                value="{{ old('email') }}"
+                                class="auth-input form-control-lg @error('email') auth-input-error @enderror"
+                                required
+                                autocomplete="email">
+                        </div>
                         @error('email')
-                        <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        <div class="auth-message auth-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            {{ $message }}
+                        </div>
                         @enderror
-                    </div>
 
-                    {{-- Username (Optional) --}}
-                    <div class="position-relative mb-4">
-                        <!--label for="username" class="form-label">Username (Optional)</label-->
-                        <input type="text" class="form-control form-control-lg @error('username') is-invalid @enderror"
-                            id="username"
-                            name="username"
-                            value="{{ old('username') }}" 
-                            placeholder="Username (Option)" />
+                        <!-- Username (Optional) -->
+                        <div class="auth-input-group">
+                            <i class="fas fa-at auth-input-icon"></i>
+                            <input
+                                id="username"
+                                type="text"
+                                name="username"
+                                placeholder="Username (Optional)"
+                                value="{{ old('username') }}"
+                                class="auth-input form-control-lg @error('username') auth-input-error @enderror"
+                                autocomplete="username">
+                        </div>
                         @error('username')
-                        <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        <div class="auth-message auth-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            {{ $message }}
+                        </div>
                         @enderror
-                    </div>
 
-                    {{-- Phone Number (Optional) --}}
-                    <div class="position-relative mb-4">
-                        <!--label for="phone" class="form-label">Phone Number (Optional)</label-->
-                        <input type="text" class="form-control form-control-lg @error('phone') is-invalid @enderror" 
-                        id="phone" 
-                        name="phone" 
-                        value="{{ old('phone') }}" 
-                        placeholder="Phone Number"
-                        />
+                        <!-- Phone Number (Optional) -->
+                        <div class="auth-input-group">
+                            <i class="fas fa-phone auth-input-icon"></i>
+                            <input
+                                id="phone"
+                                type="text"
+                                name="phone"
+                                placeholder="Phone Number (Optional)"
+                                value="{{ old('phone') }}"
+                                class="auth-input form-control-lg @error('phone') auth-input-error @enderror"
+                                autocomplete="tel">
+                        </div>
                         @error('phone')
-                        <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        <div class="auth-message auth-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            {{ $message }}
+                        </div>
                         @enderror
-                    </div>
 
-                    {{-- ID Card / CCCD (Optional) --}}
-                    <div class="position-relative mb-4">
-                        <!--label for="id_card" class="form-label">ID Card / CCCD (Optional)</label-->
-                        <input type="text" class="form-control form-control-lg @error('id_card') is-invalid @enderror" 
-                        id="id_card" 
-                        name="id_card" 
-                        value="{{ old('id_card') }}" 
-                        placeholder="ID Card"/>
+                        <!-- ID Card / CCCD (Optional) -->
+                        <div class="auth-input-group">
+                            <i class="fas fa-id-card auth-input-icon"></i>
+                            <input
+                                id="id_card"
+                                type="text"
+                                name="id_card"
+                                placeholder="ID Card / CCCD (Optional)"
+                                value="{{ old('id_card') }}"
+                                class="auth-input form-control-lg @error('id_card') auth-input-error @enderror"
+                                autocomplete="off">
+                        </div>
                         @error('id_card')
-                        <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        <div class="auth-message auth-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            {{ $message }}
+                        </div>
                         @enderror
-                    </div>
 
-                    {{-- Password (Required) --}}
-                    <div class="mb-4">
-                        <!--label for="password" class="form-label">Password</label-->
-                        <div class="password-toggle">
-                            <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror" 
-                            id="password" 
-                            name="password" 
-                            autocomplete="new-password" 
-                            minlength="8" 
-                            placeholder="Password (Minimum 8 characters)" 
-                            required />
-                            @error('password')
-                            <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
-                            @enderror
-                            <label class="password-toggle-button fs-lg">
-                                <input type="checkbox" class="btn-check" />
+                        <!-- Password -->
+                        <div class="auth-input-group">
+                            <i class="fas fa-lock auth-input-icon"></i>
+                            <input
+                                id="password"
+                                type="password"
+                                name="password"
+                                placeholder="{{ __('Password') }}"
+                                class="auth-input form-control-lg @error('password') auth-input-error @enderror"
+                                required
+                                autocomplete="new-password"
+                                minlength="8">
+                        </div>
+                        @error('password')
+                        <div class="auth-message auth-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            {{ $message }}
+                        </div>
+                        @enderror
+
+                        <!-- Confirm Password -->
+                        <div class="auth-input-group">
+                            <i class="fas fa-lock auth-input-icon"></i>
+                            <input
+                                id="password-confirm"
+                                type="password"
+                                name="password_confirmation"
+                                placeholder="{{ __('Confirm Password') }}"
+                                class="auth-input form-control-lg"
+                                required
+                                autocomplete="new-password"
+                                minlength="8">
+                        </div>
+
+                        <!-- Privacy Policy Checkbox -->
+                        <div class="auth-remember">
+                            <input type="checkbox" id="privacy" name="privacy" />
+                            <label for="privacy" class="auth-remember-label">
+                                I have read and accept
+                                <a href="#" class="auth-link">Privacy policy</a>
                             </label>
                         </div>
-                    </div>
 
-                    {{-- Confirm Password (Required) --}}
-                    <div class="mb-4">
-                        <!--label for="password-confirm" class="form-label">Confirm Password</label-->
-                        <div class="password-toggle">
-                            <input type="password" class="form-control form-control-lg @error('password_confirmation') is-invalid @enderror" 
-                            id="password-confirm" 
-                            name="password_confirmation" 
-                            autocomplete="new-password" 
-                            minlength="8" 
-                            placeholder="Confirm Password (Minimum 8 characters)" 
-                            required />
-                            @error('password_confirmation')
-                            <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
-                            @enderror
-                            <label class="password-toggle-button fs-lg">
-                                <input type="checkbox" class="btn-check" />
-                            </label>
+                        <button type="submit" class="auth-btn-login" id="registerButton" disabled>
+                            <span class="btn-text">{{ __('Create an account') }}</span>
+                            <span class="btn-loading">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </span>
+                        </button>
+                    </form>
+
+                    <!-- Social Login Section -->
+                    <div class="social-login-section">
+                        <div class="social-login-divider">
+                            <span>or register with</span>
+                        </div>
+                        <div class="social-login-buttons">
+                            <a href="{{ route('google.login') }}" class="social-btn btn-google">
+                                <i class="fab fa-google"></i>
+                                <span>Google</span>
+                            </a>
+                            <a href="#" class="social-btn btn-facebook">
+                                <i class="fab fa-facebook-f"></i>
+                                <span>Facebook</span>
+                            </a>
+                            <a href="#" class="social-btn btn-apple">
+                                <i class="fab fa-apple"></i>
+                                <span>Apple</span>
+                            </a>
                         </div>
                     </div>
 
-                    <div class="d-flex flex-column gap-2 mb-4">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="privacy" name="privacy" />
-                            <label for="privacy" class="form-check-label">I have read and accept <a class="text-dark-emphasis" href="#">Privacy policy</a></label>
-                        </div>
-                    </div>
+                    <!-- Login Link -->
+                    <p class="auth-register-text">
+                        Already have an account?
+                        <a href="{{ route('user.login') }}">Sign In</a>
+                    </p>
 
-                    {{-- Submit Button (Dùng lớp auth-btn-login tùy chỉnh) --}}
-                    <button type="submit" class="auth-btn-login btn btn-lg btn-primary w-100" id="registerButton">
-                        <span class="btn-text">Create an account</span>
-                        <span class="btn-loading" style="display: none;">
-                            <i class="fas fa-spinner fa-spin"></i>
-                        </span>
-                    </button>
-                </form>
-
-                {{-- Social login --}}
-                <div class="d-flex align-items-center my-4">
-                    <hr class="w-100 m-0">
-                    <span class="text-body-emphasis fw-medium text-nowrap mx-4">or register with</span>
-                    <hr class="w-100 m-0">
-                </div>
-                <div class="d-flex flex-column flex-sm-row gap-3 pb-4 mb-3 mb-lg-4">
-                    <a href="{{ route('google.login') }}" class="btn btn-lg btn-outline-secondary w-100 px-2">
-                        <i class="ci-google ms-1 me-1"></i> Google
-                    </a>
-                    <a href="#" class="btn btn-lg btn-outline-secondary w-100 px-2">
-                        <i class="ci-facebook ms-1 me-1"></i> Facebook
-                    </a>
-                    <a href="#" class="btn btn-lg btn-outline-secondary w-100 px-2">
-                        <i class="ci-apple ms-1 me-1"></i> Apple
-                    </a>
-                </div>
-
-                {{-- Footer --}}
-                <p class="fs-xs mb-0">
-                    Copyright &copy; by <span class="animate-underline"><a class="animate-target text-dark-emphasis text-decoration-none" href="#" target="_blank">{{ config('app.name', 'GreenTech') }}</a></span>.
-                </p>
-
-            </div>
-
-            <div class="d d-lg-block w-100 py-4 ms-auto auth-cover-greentech" style="max-width:1034px">
-                <div class="d-flex flex-column justify-content-center h-100 rounded-5 overflow-hidden">
-
-                    <div class="text-center p-5 auth-welcome-content">
-                        <h1 class="display-3 fw-bold mb-3">GreenTech IoT</h1>
-                        <p class="lead fw-medium">Smart Agriculture, Fueling Markets.</p>
-                    </div>
+                    <!-- Footer -->
+                    <p class="auth-copyright-text fs-xs mb-0 mt-4 text-center">
+                        Copyright &copy; by <a href="#">{{ config('app.name', 'GreenTech') }}</a>. Sign In. Privacy policy
+                    </p>
                 </div>
             </div>
         </div>
     </main>
 
-    {{-- Script cho Loading Spinner (Tương tự login) --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('registerForm');
             const button = document.getElementById('registerButton');
+            const inputs = form.querySelectorAll('.auth-input');
 
-            // Xử lý khi nhấn Submit
+            // Enable button only when all required fields are filled
+            function checkFormValidity() {
+                const nameInput = form.querySelector('input[name="name"]');
+                const emailInput = form.querySelector('input[name="email"]');
+                const passwordInput = form.querySelector('input[name="password"]');
+                const confirmPasswordInput = form.querySelector('input[name="password_confirmation"]');
+
+                const isValid = nameInput.value.trim() !== '' &&
+                    emailInput.value.trim() !== '' &&
+                    passwordInput.value.trim() !== '' &&
+                    confirmPasswordInput.value.trim() !== '' &&
+                    passwordInput.value === confirmPasswordInput.value;
+
+                button.disabled = !isValid;
+            }
+
+            // Check validity on input
+            inputs.forEach(input => {
+                input.addEventListener('input', checkFormValidity);
+                input.addEventListener('change', checkFormValidity);
+            });
+
+            // Initial check
+            checkFormValidity();
+
+            // Form submission handling
             form.addEventListener('submit', function(e) {
-                // Sử dụng HTML5 checkValidity để kiểm tra các trường required
-                if (form.checkValidity()) {
-                    button.disabled = true;
-                    button.querySelector('.btn-text').style.display = 'none';
-                    button.querySelector('.btn-loading').style.display = 'inline-block';
-                }
+                button.disabled = true;
+                button.classList.add('auth-btn-loading');
+            });
+
+            // Auto-hide messages after 5 seconds
+            const messages = document.querySelectorAll('.auth-message');
+            messages.forEach(message => {
+                setTimeout(() => {
+                    message.style.opacity = '0';
+                    setTimeout(() => {
+                        message.style.display = 'none';
+                    }, 300);
+                }, 5000);
             });
         });
     </script>
